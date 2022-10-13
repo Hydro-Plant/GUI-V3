@@ -14,7 +14,7 @@ public class constants {
 
 	public static double button_distance = 0.02;
 	public static double edge_distance = 0.03;
-	public static double height_outline = 0.0006;
+	public static double height_outline = 0.0009;
 	public static double db_speed = 1;
 	public static double db_curve = 0.3;
 

@@ -34,12 +34,12 @@ import javafx.stage.Stage;
 public class App extends Application {
 	long last = 0;
 
-	double x = 16;
-	double y = 0;
-	double z = 0;
-	double t = 1;
-	double w = 0.1;
-	double l = 0;
+	double temp = 0;
+	double light = 0;
+	boolean lightStatus = false;
+	double ph = 0;
+	double flow = 0;
+	double level = 0;
 
 	Topbar tb;
 	Dashboard db;
@@ -143,29 +143,21 @@ public class App extends Application {
 			
 			client.setCallback(new MqttCallback() {
 				public void messageArrived(String topic, MqttMessage message) throws Exception {
-					System.out.println(topic);
 					if(topic.equals("value/temperature")) {
-						double temp = (double)Double.parseDouble(message.toString());
-						db.setTemp(temp);
-						ts.setTemp(temp);
+						temp = (double)Double.parseDouble(message.toString());
 					}else if(topic.equals("value/light")) {
-						double light = (double)Double.parseDouble(message.toString());
-						db.setLightValue(light);
+						light = (double)Double.parseDouble(message.toString());
 					}else if(topic.equals("value/lightStatus")) {
-						boolean light = (boolean)Boolean.parseBoolean(message.toString());
-						db.setLightStatus(light);
+						lightStatus = (boolean)Boolean.parseBoolean(message.toString());
 					}else if(topic.equals("value/ph")) {
-						double ph = (double)Double.parseDouble(message.toString());
-						db.setPHValue(ph);
+						ph = (double)Double.parseDouble(message.toString());
 					}else if(topic.equals("value/ec")) {
 						//double ph = (double)Double.parseDouble(message.toString());
 						//db.setPHValue(ph);
 					}else if(topic.equals("value/flow")) {
-						double flow = (double)Double.parseDouble(message.toString());
-						db.setFlowValue(flow);
+						flow = (double)Double.parseDouble(message.toString());
 					}else if(topic.equals("value/level")) {
-						double level = (double)Double.parseDouble(message.toString());
-						db.setLevel(level);
+						level = (double)Double.parseDouble(message.toString());
 					}
 					
 				}
@@ -207,8 +199,17 @@ public class App extends Application {
 						variables.frameRate = 1000000000 / (now - last);
 					else
 						variables.frameRate = Integer.MAX_VALUE;
-					System.out.println(variables.frameRate);
-
+					//System.out.println(variables.frameRate);
+					
+					db.setTemp(temp);
+					db.setLightValue(light);
+					db.setLightStatus(lightStatus);
+					db.setPHValue(ph);
+					db.setFlowValue(flow);
+					db.setLevel(level);
+					
+					ts.setTemp(temp);
+					
 					tb.update();
 					if (sh.handle()) {
 						System.out.println("A switchd ja scene madafaka");
@@ -234,12 +235,8 @@ public class App extends Application {
 		}
 	}
 
-	public void tempChange() {
-		db.setTemp(x);
-		ts.setTemp(x);
-	}
-
 	public static void main(String[] args) {
+		System.out.println("GUI started");
 		launch();
 	}
 

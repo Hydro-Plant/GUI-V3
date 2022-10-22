@@ -38,6 +38,7 @@ public class FlowButton extends DashboardButton {
 
 	public FlowButton() {
 		super();
+		this.value = 0;
 		reloadImages();
 
 		bb = new BoundingBox(500, 500, 0, 500, 500);
@@ -62,8 +63,10 @@ public class FlowButton extends DashboardButton {
 	}
 
 	public void setValue(double value) {
-		this.value = value;
-		information.setText2(String.format("%.1f", value));
+		if(this.value != value) {
+			this.value = value;
+			information.setText2(String.format("%.1f", value));
+		}
 	}
 
 	void reloadImages() {

@@ -6,6 +6,7 @@ import exampleLayouts.LevelButton;
 import exampleLayouts.LightButton;
 import exampleLayouts.PHButton;
 import exampleLayouts.TempButton;
+import exampleSceneObjects.Warning;
 import gui.Layout;
 import gui.Scene;
 import gui.constants;
@@ -34,7 +35,9 @@ public class Dashboard extends Scene {
 
 	Button flow_btn; // Flow Button
 	FlowButton flow_btn_layout;
-
+	
+	Warning warning;
+	
 	boolean full_sized = false;
 	boolean selecting = true;
 	int selection = 0; // 0: Temp, 1: Light, 2: PH, 3: EC, 4: Flow, 5: Level
@@ -67,7 +70,10 @@ public class Dashboard extends Scene {
 
 		flow_btn = new Button();
 		flow_btn_layout = new FlowButton();
-
+		
+		warning = new Warning();
+		warning.position(1000, 700);
+		
 		// Objektparameter werden gesetzt
 		temp_btn_layout.setTemperatures(17, 21, 25, 1);
 		temp_btn_layout.setTemperature(21);
@@ -89,6 +95,13 @@ public class Dashboard extends Scene {
 		addObject(ec_btn);
 		addObject(level_btn);
 		addObject(flow_btn);
+		addObject(warning);
+		
+		warning.setSize(0.3);
+		warning.setRectangle(800);
+		warning.setStatus(true);
+		warning.setText("Großer Lückenfüller zur Vorschau. So groß, man kann ihn kaum lejiladshjk wafhjkl dfhil shkl ehjgyvhukgafshuk.dhjkl.sahkl..ho fah.ksen. Sehr professionell was hier steht.");
+		warning.setOutline(constants.height_outline * variables.height);
 		updateShape();
 	}
 
@@ -167,6 +180,7 @@ public class Dashboard extends Scene {
 
 	public int mouseClick(double mousex, double mousey) { // 0: Temp, 1: Light, 2: PH, 3: EC, 4: Flow, 5: Level
 		int res = -1;
+		/*
 		if (selecting) {
 			full_sized = false;
 			selecting = true;
@@ -181,11 +195,8 @@ public class Dashboard extends Scene {
 				}
 			}
 		}
+		*/
 		return res;
-	}
-	
-	public Layout[] getLayouts() {
-		return button_layouts.clone();
 	}
 
 	public void updateSize() {

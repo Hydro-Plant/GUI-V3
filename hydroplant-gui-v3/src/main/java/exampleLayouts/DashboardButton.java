@@ -69,9 +69,9 @@ public class DashboardButton extends Layout {
 	}
 
 	public void setTextAlpha(double alpha) {
-		title.setFill(Alpha.changeAlpha((Color) title.getFill(), alpha));
-		information.setFill(Alpha.changeAlpha((Color) information.getFill(), alpha));
-		unit.setFill(Alpha.changeAlpha((Color) unit.getFill(), alpha));
+		title.setAlpha(alpha);
+		information.setAlpha(alpha);
+		unit.setAlpha(alpha);
 
 		title.setStroke(Alpha.changeAlpha((Color) title.getStroke(), alpha));
 		information.setStroke(Alpha.changeAlpha((Color) information.getStroke(), alpha));

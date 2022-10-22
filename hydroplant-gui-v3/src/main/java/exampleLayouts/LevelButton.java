@@ -33,7 +33,7 @@ public class LevelButton extends DashboardButton {
 
 	public LevelButton() {
 		super();
-
+		this.level = 0;
 		wave_full_water = new Rectangle2();
 		wave_full_water.setX2(0);
 		wave_full_water.setY2(0);
@@ -55,9 +55,11 @@ public class LevelButton extends DashboardButton {
 	}
 
 	public void setLevel(double level) {
-		information.setText2(String.format("%.1f", level));
-		this.level = level;
-		updateWave();
+		if (this.level != level) {
+			information.setText2(String.format("%.1f", level));
+			this.level = level;
+			updateWave();
+		}
 	}
 
 	public void setShape(int obj_width, int obj_height) {

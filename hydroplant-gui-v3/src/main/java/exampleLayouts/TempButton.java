@@ -12,32 +12,38 @@ public class TempButton extends DashboardButton {
 	double v_max;
 	double v_min;
 
+	double value;
+
 	public TempButton() {
 		super();
+		this.value = 0;
 		title.setText2("Temperatur");
 		unit.setText2("°C");
 	}
 
 	public void setTemperature(double temp) {
-		information.setText2(String.format("%.1f", temp));
-		if (temp <= v_optimal + v_tol && temp >= v_optimal - v_tol) {
-			bg_rec.setFill(c_optimal);
-		} else if (temp >= v_max) {
-			bg_rec.setFill(c_max);
-		} else if (temp <= v_min) {
-			bg_rec.setFill(c_min);
-		} else if (temp < v_max && temp > v_optimal + v_tol) {
-			double temp_perc = ((temp - (v_optimal + v_tol))) / (v_max - (v_optimal + v_tol));
-			bg_rec.setFill(
-					Color.rgb((int) ((1 - temp_perc) * c_optimal.getRed() * 255 + temp_perc * c_max.getRed() * 255),
-							(int) ((1 - temp_perc) * c_optimal.getGreen() * 255 + temp_perc * c_max.getGreen() * 255),
-							(int) ((1 - temp_perc) * c_optimal.getBlue() * 255 + temp_perc * c_max.getBlue() * 255)));
-		} else {
-			double temp_perc = (temp - v_min) / ((v_optimal - v_tol) - v_min);
-			bg_rec.setFill(
-					Color.rgb((int) ((1 - temp_perc) * c_min.getRed() * 255 + temp_perc * c_optimal.getRed() * 255),
-							(int) ((1 - temp_perc) * c_min.getGreen() * 255 + temp_perc * c_optimal.getGreen() * 255),
-							(int) ((1 - temp_perc) * c_min.getBlue() * 255 + temp_perc * c_optimal.getBlue() * 255)));
+		if (this.value != temp) {
+			this.value = temp;
+			information.setText2(String.format("%.1f", temp));
+			if (temp <= v_optimal + v_tol && temp >= v_optimal - v_tol) {
+				bg_rec.setFill(c_optimal);
+			} else if (temp >= v_max) {
+				bg_rec.setFill(c_max);
+			} else if (temp <= v_min) {
+				bg_rec.setFill(c_min);
+			} else if (temp < v_max && temp > v_optimal + v_tol) {
+				double temp_perc = ((temp - (v_optimal + v_tol))) / (v_max - (v_optimal + v_tol));
+				bg_rec.setFill(Color.rgb(
+						(int) ((1 - temp_perc) * c_optimal.getRed() * 255 + temp_perc * c_max.getRed() * 255),
+						(int) ((1 - temp_perc) * c_optimal.getGreen() * 255 + temp_perc * c_max.getGreen() * 255),
+						(int) ((1 - temp_perc) * c_optimal.getBlue() * 255 + temp_perc * c_max.getBlue() * 255)));
+			} else {
+				double temp_perc = (temp - v_min) / ((v_optimal - v_tol) - v_min);
+				bg_rec.setFill(Color.rgb(
+						(int) ((1 - temp_perc) * c_min.getRed() * 255 + temp_perc * c_optimal.getRed() * 255),
+						(int) ((1 - temp_perc) * c_min.getGreen() * 255 + temp_perc * c_optimal.getGreen() * 255),
+						(int) ((1 - temp_perc) * c_min.getBlue() * 255 + temp_perc * c_optimal.getBlue() * 255)));
+			}
 		}
 	}
 

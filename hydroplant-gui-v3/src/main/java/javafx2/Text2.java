@@ -1,8 +1,10 @@
 package javafx2;
 
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import standard.Alpha;
 import standard.Positioning;
 
 public class Text2 extends Text {
@@ -58,5 +60,9 @@ public class Text2 extends Text {
 	public void setText2(String text) {
 		super.setText(text);
 		updateText();
+	}
+	
+	public void setAlpha(double alpha) {
+		this.setFill(Alpha.changeAlpha((Color) getFill(), alpha));
 	}
 }

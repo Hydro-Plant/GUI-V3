@@ -55,11 +55,9 @@ public class LevelButton extends DashboardButton {
 	}
 
 	public void setLevel(double level) {
-		if (this.level != level) {
-			information.setText2(String.format("%.1f", level));
-			this.level = level;
-			updateWave();
-		}
+		information.setText2(String.format("%.1f", level));
+		this.level = level;
+		updateWave();
 	}
 
 	public void setShape(int obj_width, int obj_height) {

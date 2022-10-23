@@ -27,7 +27,7 @@ public class BackButton extends Layout {
 		bg_circle.setY2(0);
 		bg_circle.setPos(4);
 		bg_circle.setFill(Color.WHITE);
-		bg_circle.setStroke(Color.BLACK);
+		bg_circle.setStroke(constants.outline_col);
 
 		arrow_img = new Image("file:pics/backwards_arrow.png");
 		//arrow_img = new Image("file:jesus.png");
@@ -55,7 +55,7 @@ public class BackButton extends Layout {
 		bg_circle.setY2(0);
 		bg_circle.setPos(4);
 		bg_circle.setFill(Color.WHITE);
-		bg_circle.setStroke(Color.BLACK);
+		bg_circle.setStroke(constants.outline_col);
 
 		arrow_img = new Image("file:pics/backwards_arrow.png");
 		//arrow_img = new Image("file:jesus.png");

@@ -4,7 +4,7 @@ import gui.Layout;
 import standard.Positioning;
 
 public class Button extends SceneObject {
-	int button_height, button_width;
+	double button_height, button_width;
 	public Layout design;
 	
 	public Button() {
@@ -15,9 +15,9 @@ public class Button extends SceneObject {
 		this.positioning = 0;
 	}
 
-	public void setShape(int button_width, int button_height) {
-		this.button_height = button_height;
-		this.button_width = button_width;
+	public void setShape(double d, double e) {
+		this.button_height = e;
+		this.button_width = d;
 	}
 
 	public void setDesign(Layout design) {
@@ -44,5 +44,9 @@ public class Button extends SceneObject {
 	public void update() {
 		if (design != null)
 			design.update();
+	}
+	
+	public void toFront() {
+		design.toFront();
 	}
 }

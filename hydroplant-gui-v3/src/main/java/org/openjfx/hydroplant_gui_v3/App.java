@@ -41,6 +41,22 @@ public class App extends Application {
 	double flow = 0;
 	double level = 0;
 
+	String temp_warning_text = "";
+	String light_warning_text = "";
+	String ph_warning_text = "";
+	String ec_warning_text = "";
+	String flow_warning_text = "";
+	String level_warning_text = "";
+
+	boolean temp_warning = false;
+	boolean light_warning = false;
+	boolean ph_warning = false;
+	boolean ec_warning = false;
+	boolean flow_warning = false;
+	boolean level_warning = false;
+
+	boolean shitChanged = true;
+
 	Topbar tb;
 	Dashboard db;
 	TempScene ts;
@@ -58,7 +74,10 @@ public class App extends Application {
 			MqttClient client = new MqttClient("tcp://localhost:1883", "gui", pers);
 			client.connect();
 
-			client.subscribe(new String[]{"value/temperature", "value/light", "value/lightStatus", "value/ph", "value/ec", "value/flow", "value/level"});
+			client.subscribe(new String[] { "value/temperature", "value/light", "value/lightStatus", "value/ph",
+					"value/ec", "value/flow", "value/level", "warning/temperature", "warning/light", "warning/ph",
+					"warning/ec", "warning/flow", "warning/level", "warningtext/temperature", "warningtext/light",
+					"warningtext/ph", "warningtext/ec", "warningtext/flow", "warningtext/level" });
 			System.out.println("Client communication established");
 
 			var javaVersion = SystemInfo.javaVersion();
@@ -138,28 +157,73 @@ public class App extends Application {
 
 				}
 			});
-				
+
 			// MQTT Client callback
-			
+
 			client.setCallback(new MqttCallback() {
 				public void messageArrived(String topic, MqttMessage message) throws Exception {
-					if(topic.equals("value/temperature")) {
-						temp = (double)Double.parseDouble(message.toString());
-					}else if(topic.equals("value/light")) {
-						light = (double)Double.parseDouble(message.toString());
-					}else if(topic.equals("value/lightStatus")) {
-						lightStatus = (boolean)Boolean.parseBoolean(message.toString());
-					}else if(topic.equals("value/ph")) {
-						ph = (double)Double.parseDouble(message.toString());
-					}else if(topic.equals("value/ec")) {
-						//double ph = (double)Double.parseDouble(message.toString());
-						//db.setPHValue(ph);
-					}else if(topic.equals("value/flow")) {
-						flow = (double)Double.parseDouble(message.toString());
-					}else if(topic.equals("value/level")) {
-						level = (double)Double.parseDouble(message.toString());
+					switch (topic.toUpperCase()) {
+					case "VALUE/TEMPERATURE":
+						temp = (double) Double.parseDouble(message.toString());
+						break;
+					case "VALUE/LIGHT":
+						light = (double) Double.parseDouble(message.toString());
+						break;
+					case "VALUE/LIGHTSTATUS":
+						lightStatus = (boolean) Boolean.parseBoolean(message.toString());
+						break;
+					case "VALUE/PH":
+						ph = (double) Double.parseDouble(message.toString());
+						break;
+					case "VALUE/EC":
+						// ec = (double)Double.parseDouble(message.toString());
+						break;
+					case "VALUE/FLOW":
+						flow = (double) Double.parseDouble(message.toString());
+						break;
+					case "VALUE/LEVLE":
+						level = (double) Double.parseDouble(message.toString());
+						break;
+
+					case "WARNING/TEMPERATURE":
+						temp_warning = (boolean) Boolean.parseBoolean(message.toString());
+						break;
+					case "WARNING/LIGHT":
+						light_warning = (boolean) Boolean.parseBoolean(message.toString());
+						break;
+					case "WARNING/PH":
+						ph_warning = (boolean) Boolean.parseBoolean(message.toString());
+						break;
+					case "WARNING/EC":
+						ec_warning = (boolean) Boolean.parseBoolean(message.toString());
+						break;
+					case "WARNING/FLOW":
+						flow_warning = (boolean) Boolean.parseBoolean(message.toString());
+						break;
+					case "WARNING/LEVEL":
+						level_warning = (boolean) Boolean.parseBoolean(message.toString());
+						break;
+
+					case "WARNINGTEXT/TEMPERATURE":
+						temp_warning_text = message.toString();
+						break;
+					case "WARNINGTEXT/LIGHT":
+						light_warning_text = message.toString();
+						break;
+					case "WARNINGTEXT/PH":
+						ph_warning_text = message.toString();
+						break;
+					case "WARNINGTEXT/EC":
+						ec_warning_text = message.toString();
+						break;
+					case "WARNINGTEXT/FLOW":
+						flow_warning_text = message.toString();
+						break;
+					case "WARNINGTEXT/LEVEL":
+						level_warning_text = message.toString();
+						break;
 					}
-					
+					shitChanged = true;
 				}
 
 				public void connectionLost(Throwable cause) {
@@ -167,10 +231,10 @@ public class App extends Application {
 				}
 
 				public void deliveryComplete(IMqttDeliveryToken token) {
-					
+
 				}
 			});
-			
+
 			stage.sizeToScene(); // Sets up the Stage / Window
 			stage.setScene(scene);
 			stage.setTitle("Hydroplant.virus.exe");
@@ -185,7 +249,7 @@ public class App extends Application {
 			stage.fullScreenProperty().addListener(stageSizeChange);
 			stage.maximizedProperty().addListener(stageSizeChange);
 
-			//stage.setFullScreen(true);
+			// stage.setFullScreen(true);
 
 			sh.getActive().updateSize();
 			tb.updateSize();
@@ -199,17 +263,31 @@ public class App extends Application {
 						variables.frameRate = 1000000000 / (now - last);
 					else
 						variables.frameRate = Integer.MAX_VALUE;
-					//System.out.println(variables.frameRate);
-					
-					db.setTemp(temp);
-					db.setLightValue(light);
-					db.setLightStatus(lightStatus);
-					db.setPHValue(ph);
-					db.setFlowValue(flow);
-					db.setLevel(level);
-					
-					ts.setTemp(temp);
-					
+					// System.out.println(variables.frameRate);
+
+					if (shitChanged) {
+						db.setTemp(temp);
+						db.setLightValue(light);
+						db.setLightStatus(lightStatus);
+						db.setPHValue(ph);
+						db.setFlowValue(flow);
+						db.setLevel(level);
+
+						db.setTempWarning(temp_warning);
+						db.setTempWarningText(temp_warning_text);
+						db.setLightWarning(light_warning);
+						db.setLightWarningText(light_warning_text);
+						db.setPHWarning(ph_warning);
+						db.setPHWarningText(ph_warning_text);
+						db.setECWarning(ec_warning);
+						db.setECWarningText(ec_warning_text);
+						db.setFlowWarning(flow_warning);
+						db.setFlowWarningText(flow_warning_text);
+						db.setLevelWarning(level_warning);
+						db.setLevelWarningText(level_warning_text);
+						shitChanged = false;
+					}
+
 					tb.update();
 					if (sh.handle()) {
 						System.out.println("A switchd ja scene madafaka");

@@ -4,8 +4,8 @@ import gui.IDCounter;
 import javafx.scene.layout.Pane;
 
 public class SceneObject {
-	protected int positionx;
-	protected int positiony;
+	protected double positionx;
+	protected double positiony;
 	protected int positioning;
 
 	long id;
@@ -34,17 +34,21 @@ public class SceneObject {
 		return id == other.id;
 	}
 
-	public void position(int positionx, int positiony, int positioning) { // Objektposition wird intern verändert
+	public void setPosition(double positionx, double positiony, int positioning) { // Objektposition wird intern verändert
 		this.positionx = positionx;
 		this.positiony = positiony;
 		this.positioning = positioning;
 		updatePosition();
 	}
 
-	public void position(int positionx, int positiony) {
+	public void setPosition(double positionx, double positiony) {
 		this.positionx = positionx;
 		this.positiony = positiony;
 		updatePosition();
+	}
+	
+	public double[] getPosition() {
+		return new double[] {this.positionx, this.positiony};
 	}
 
 	protected void updatePosition() { // Kinder der Klasse können in diese Funktion die Positionsänderung verarbeiten

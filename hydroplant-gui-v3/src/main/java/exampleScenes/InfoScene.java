@@ -37,7 +37,7 @@ public class InfoScene extends Scene {
 				- (int) (variables.height * (1 - constants.height_perc) * (2 * constants.edge_distance));
 		int full_height = (int) (variables.height * (1 - constants.height_perc) * (1 - 2 * constants.edge_distance));
 
-		bg_fl.position((int) (variables.height * (1 - constants.height_perc) * constants.edge_distance),
+		bg_fl.setPosition((int) (variables.height * (1 - constants.height_perc) * constants.edge_distance),
 				(int) (variables.height
 						* (constants.height_perc + (1 - constants.height_perc) * constants.edge_distance)),
 				0);

@@ -28,4 +28,8 @@ public class FlatLayout extends SceneObject {
 		if (design != null)
 			design.update();
 	}
+	
+	public void toFront() {
+		design.toFront();
+	}
 }

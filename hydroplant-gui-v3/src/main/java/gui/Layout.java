@@ -5,18 +5,18 @@ import javafx.scene.layout.Pane;
 
 public class Layout {
 	Pane pane;
-	protected int positionx, positiony;
+	protected double positionx, positiony;
 	protected int positioning;
 
 	public Layout() {
 		pane = new Pane();
 	}
 
-	public void setLayoutPosition(int posx, int posy) {
-		positionx = posx;
-		positiony = posy;
-		pane.setTranslateX(posx);
-		pane.setTranslateY(posy);
+	public void setLayoutPosition(double positionx2, double positiony2) {
+		positionx = positionx2;
+		positiony = positiony2;
+		pane.setTranslateX(positionx2);
+		pane.setTranslateY(positiony2);
 	}
 
 	public void addObject(Node new_object) {

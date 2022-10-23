@@ -7,7 +7,7 @@ public class LightButton extends DashboardButton {
 	Color light_off = Color.rgb(49, 51, 70);
 
 	double value;
-	boolean status;
+	boolean status = true;
 
 	public LightButton() {
 		super();
@@ -18,20 +18,16 @@ public class LightButton extends DashboardButton {
 	}
 
 	public void setValue(double value) {
-		if (this.value != value) {
-			this.value = value;
-			information.setText2(String.format("%.1f", value));
-		}
+		this.value = value;
+		information.setText2(String.format("%.1f", value));
 	}
 
 	public void setStatus(boolean value) {
-		if (this.status != value) {
-			this.status = value;
-			if (value) {
-				bg_rec.setFill(light_on);
-			} else {
-				bg_rec.setFill(light_off);
-			}
+		this.status = value;
+		if (value) {
+			bg_rec.setFill(light_on);
+		} else {
+			bg_rec.setFill(light_off);
 		}
 	}
 }

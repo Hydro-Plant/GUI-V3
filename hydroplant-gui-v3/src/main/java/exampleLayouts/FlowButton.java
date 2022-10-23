@@ -63,10 +63,8 @@ public class FlowButton extends DashboardButton {
 	}
 
 	public void setValue(double value) {
-		if(this.value != value) {
-			this.value = value;
-			information.setText2(String.format("%.1f", value));
-		}
+		this.value = value;
+		information.setText2(String.format("%.1f", value));
 	}
 
 	void reloadImages() {

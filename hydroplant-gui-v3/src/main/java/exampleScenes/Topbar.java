@@ -52,12 +52,12 @@ public class Topbar extends Scene {
 		bb.setSize((int) (variables.height * constants.height_perc * constants.button_topbar_perc) / 2);
 		btn.setShape((int) (variables.height * constants.height_perc * constants.button_topbar_perc),
 				(int) (variables.height * constants.height_perc * constants.button_topbar_perc));
-		btn.position(
+		btn.setPosition(
 				variables.width - (int) (variables.height * constants.height_perc / 2)
 						- (int) (variables.height * constants.button_topbar_perc_pos),
 				(int) (variables.height * constants.height_perc / 2), 4);
 		bs.setSize(variables.height * constants.battery_s_size);
-		bs.position((int) (variables.height * constants.battery_s_pos),
+		bs.setPosition((int) (variables.height * constants.battery_s_pos),
 				(int) (variables.height * constants.height_perc / 2));
 	}
 

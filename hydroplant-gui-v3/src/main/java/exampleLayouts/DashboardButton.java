@@ -34,14 +34,14 @@ public class DashboardButton extends Layout {
 		information = new Text2();
 		unit = new Text2();
 
-		title.setFill(Color.rgb(255, 255, 255));
-		information.setFill(Color.rgb(255, 255, 255));
-		unit.setFill(Color.rgb(255, 255, 255));
+		title.setFill(Color.WHITE);
+		information.setFill(Color.WHITE);
+		unit.setFill(Color.WHITE);
 
-		title.setStroke(Color.BLACK);
-		information.setStroke(Color.BLACK);
-		unit.setStroke(Color.BLACK);
-		bg_rec.setStroke(Color.BLACK);
+		title.setStroke(constants.outline_col);
+		information.setStroke(constants.outline_col);
+		unit.setStroke(constants.outline_col);
+		bg_rec.setStroke(constants.outline_col);
 
 		mask.setFill(Color.WHITE);
 		mask.setX2(0);

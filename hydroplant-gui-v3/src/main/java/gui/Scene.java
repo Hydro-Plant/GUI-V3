@@ -6,15 +6,14 @@ import javafx.scene.layout.Pane;
 import sceneObjects.SceneObject;
 
 public class Scene {
-	public Pane root = new Pane();
-
 	protected ArrayList<SceneObject> scene_objects;
 	protected int scene_event = -1;
+	private Pane root;
 
 	protected long id;
 
 	public Scene() {
-		scene_objects = new ArrayList<SceneObject>();
+		scene_objects = new ArrayList<>();
 		this.id = IDCounter.getSceneObjectID();
 	}
 
@@ -23,7 +22,7 @@ public class Scene {
 	}
 
 	public void addObject(SceneObject new_object) {
-		root.getChildren().add(new_object.getPane());
+		super.getChildren().add(new_object);
 		this.scene_objects.add(new_object);
 	}
 
@@ -41,7 +40,7 @@ public class Scene {
 
 	}
 
-	public int mouseClick(double mousex, double mousey) { // Wird ausgeführt, wenn die Maus gedrückt wird
+	public int mouseClick() { // Wird ausgeführt, wenn die Maus gedrückt wird
 		return -1;
 	}
 
@@ -49,9 +48,16 @@ public class Scene {
 
 	}
 
+	@Override
+	public void toFront() {
+		for (SceneObject scene_object : scene_objects) {
+			scene_object.toFront();
+		}
+	}
+
 	public void update() { // Wird jedes Frame ausgeführt
-		for (int x = 0; x < scene_objects.size(); x++) {
-			scene_objects.get(x).update();
+		for (SceneObject scene_object : scene_objects) {
+			scene_object.update();
 		}
 	}
 }

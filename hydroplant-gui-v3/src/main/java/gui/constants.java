@@ -4,10 +4,10 @@ import javafx.scene.paint.Color;
 
 public class constants {
 	// -------------------------------------- Everything
-	
+
 	public final static Color outline_col = Color.BLACK;
 	public final static double height_outline = 0.0012;
-	
+
 	// -------------------------------------- Topbar
 	public final static double height_perc = 0.1;
 	public final static double button_topbar_perc = 0.7;

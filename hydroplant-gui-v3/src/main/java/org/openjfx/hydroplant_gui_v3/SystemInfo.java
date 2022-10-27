@@ -2,12 +2,12 @@ package org.openjfx.hydroplant_gui_v3;
 
 public class SystemInfo {
 
-    public static String javaVersion() {
-        return System.getProperty("java.version");
-    }
+	public static String javaVersion() {
+		return System.getProperty("java.version");
+	}
 
-    public static String javafxVersion() {
-        return System.getProperty("javafx.version");
-    }
+	public static String javafxVersion() {
+		return System.getProperty("javafx.version");
+	}
 
 }

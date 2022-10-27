@@ -39,6 +39,7 @@ public class Vector {
 		return new Vector(Math.cos(angle), Math.sin(angle));
 	}
 
+	@Override
 	public String toString() {
 		return ("{ " + x + "; " + y + " }");
 	}

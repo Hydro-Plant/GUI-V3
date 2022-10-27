@@ -20,13 +20,13 @@ public class PoissonDisc {
 	int sizex, sizey;
 
 	public PoissonDisc(int sizex, int sizey, double r) {
-		this.active = new ArrayList<Integer>();
-		this.half_active = new ArrayList<Integer>();
-		this.points = new ArrayList<Point>();
+		this.active = new ArrayList<>();
+		this.half_active = new ArrayList<>();
+		this.points = new ArrayList<>();
 		this.sizex = sizex;
 		this.sizey = sizey;
 		this.r = r;
-		this.w = r / (double) Math.sqrt(2);
+		this.w = r / Math.sqrt(2);
 
 		bb = null;
 
@@ -87,16 +87,16 @@ public class PoissonDisc {
 				start_loop: for (int x = -2; x <= 2; x++) { // Searching points arround new point
 					for (int y = -2; y <= 2; y++) {
 						if ((grid_x + x) >= 0 && (grid_x + x) < cols && (grid_y + y) >= 0 && (grid_y + y) < rows) { // Is
-																													// chosen
-																													// grid
-																													// cell
-																													// out
-																													// of
-																													// grid
+																													 // chosen
+																													 // grid
+																													 // cell
+																													 // out
+																													 // of
+																													 // grid
 							if (grid[(grid_x + x) + (grid_y + y) * cols] != null) { // Is grid cell not empty
 								if (grid[(grid_x + x) + (grid_y + y) * cols].dist(new_point) < r) { // Is point in cell
-																									// too close to new
-																									// cell
+																									 // too close to new
+																									 // cell
 									pos_ok = false; // New point is useless
 									break start_loop;
 								}
@@ -120,9 +120,9 @@ public class PoissonDisc {
 			}
 		}
 		if (!points_found) {
-			for (int x = 0; x < points.size(); x++) {
-				if (points.get(x).getPos() == active.get(i)) {
-					points.get(x).setMode(0);
+			for (Point point : points) {
+				if (point.getPos() == active.get(i)) {
+					point.setMode(0);
 					break;
 				}
 			}
@@ -160,10 +160,10 @@ public class PoissonDisc {
 			new_grid[x] = null;
 		}
 
-		active = new ArrayList<Integer>();
-		half_active = new ArrayList<Integer>();
+		active = new ArrayList<>();
+		half_active = new ArrayList<>();
 
-		ArrayList<Integer> remover = new ArrayList<Integer>();
+		ArrayList<Integer> remover = new ArrayList<>();
 
 		for (int x = 0; x < points.size(); x++) {
 			Vector new_pos = grid[points.get(x).getPos()];
@@ -206,7 +206,7 @@ public class PoissonDisc {
 	}
 
 	public ArrayList<ReturnPoint> getPoints() {
-		ArrayList<ReturnPoint> return_list = new ArrayList<ReturnPoint>();
+		ArrayList<ReturnPoint> return_list = new ArrayList<>();
 		for (int x = 0; x < points.size(); x++) {
 			return_list.add(new ReturnPoint(points.get(x), grid));
 		}

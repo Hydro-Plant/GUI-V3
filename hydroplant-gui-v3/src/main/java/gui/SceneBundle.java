@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class SceneBundle {
 	Scene scene;
-	ArrayList<SceneDependency> deps = new ArrayList<SceneDependency>();
+	ArrayList<SceneDependency> deps = new ArrayList<>();
 
 	public SceneBundle(Scene szene) {
 		this.scene = szene;

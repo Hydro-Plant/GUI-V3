@@ -13,6 +13,7 @@ public class Text2 extends Text {
 
 	public Text2() {
 		super();
+		super.setMouseTransparent(true);
 		setFont(Font.font("Semi-Coder", 100));
 	}
 

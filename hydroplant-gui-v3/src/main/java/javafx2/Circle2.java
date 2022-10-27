@@ -8,6 +8,10 @@ public class Circle2 extends Circle {
 	private double posx = 0;
 	private double posy = 0;
 
+	public Circle2() {
+		super.setMouseTransparent(true);
+	}
+	
 	private void updateCir() {
 		super.setCenterX(posx + Positioning.positioning(positioning, 4)[0] * 2 * super.getRadius());
 		super.setCenterY(posy + Positioning.positioning(positioning, 4)[1] * 2 * super.getRadius());

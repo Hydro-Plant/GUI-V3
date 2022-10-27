@@ -50,8 +50,7 @@ public class Topbar extends Scene {
 		backg_rec.setWidth2(variables.width);
 		backg_rec.setHeight2((int) (variables.height * constants.height_perc));
 		bb.setSize((int) (variables.height * constants.height_perc * constants.button_topbar_perc) / 2);
-		btn.setShape((int) (variables.height * constants.height_perc * constants.button_topbar_perc),
-				(int) (variables.height * constants.height_perc * constants.button_topbar_perc));
+		btn.setShape(bb.getCircle());
 		btn.setPosition(
 				variables.width - (int) (variables.height * constants.height_perc / 2)
 						- (int) (variables.height * constants.button_topbar_perc_pos),

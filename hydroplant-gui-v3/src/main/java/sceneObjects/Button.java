@@ -1,39 +1,98 @@
 package sceneObjects;
 
 import gui.Layout;
+import javafx.event.EventHandler;
+import javafx.scene.Node;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx2.Rectangle2;
 import standard.Positioning;
 
 public class Button extends SceneObject {
-	double button_height, button_width;
 	public Layout design;
+	private Pane detector;
+	private Node second_detector;
+	private boolean hovering;
+	
+	private EventHandler<MouseEvent> entered = new EventHandler<MouseEvent>() {
+		@Override
+		public void handle(MouseEvent event) {
+			System.out.println("Hovering: " + id);
+			hovering = true;
+		}
+	};
+	
+	private EventHandler<MouseEvent> exited = new EventHandler<MouseEvent>() {
+		@Override
+		public void handle(MouseEvent event) {
+			System.out.println("Not Hovering: " + id);
+			hovering = false;
+		}
+	};
 	
 	public Button() {
-		this.button_height = 0;
-		this.button_width = 0;
 		this.positionx = 0;
 		this.positiony = 0;
 		this.positioning = 0;
 	}
 
-	public void setShape(double d, double e) {
-		this.button_height = e;
-		this.button_width = d;
+	public void setShape(Node new_detector) {
+		if(detector != null) {
+			detector.removeEventHandler(MouseEvent.MOUSE_ENTERED, entered);
+			detector.removeEventHandler(MouseEvent.MOUSE_EXITED, exited);
+			detector.setMouseTransparent(true);
+			detector = null;
+		}
+		if(second_detector != null) {
+			second_detector.removeEventHandler(MouseEvent.MOUSE_ENTERED, entered);
+			second_detector.removeEventHandler(MouseEvent.MOUSE_EXITED, exited);
+			second_detector.setMouseTransparent(true);
+			second_detector = null;
+		}
+		
+		if(new_detector.getClass().equals(new Rectangle2().getClass())) {
+			Rectangle2 det = ((Rectangle2) new_detector).copy();
+			det.setFill(Color.RED);
+			det.toFront();
+			design.addObject(det);
+			System.out.println("Cool node thingi");
+		}
+		
+		second_detector = new_detector;
+		second_detector.setMouseTransparent(false);
+		second_detector.addEventHandler(MouseEvent.MOUSE_ENTERED, entered);
+		second_detector.addEventHandler(MouseEvent.MOUSE_EXITED, exited);
+	}
+	
+	public void setShape(Pane new_detector) {
+		if(detector != null) {
+			detector.removeEventHandler(MouseEvent.MOUSE_ENTERED, entered);
+			detector.removeEventHandler(MouseEvent.MOUSE_EXITED, exited);
+			detector.setMouseTransparent(true);
+			detector = null;
+		}
+		if(second_detector != null) {
+			second_detector.removeEventHandler(MouseEvent.MOUSE_ENTERED, entered);
+			second_detector.removeEventHandler(MouseEvent.MOUSE_EXITED, exited);
+			second_detector.setMouseTransparent(true);
+			second_detector = null;
+		}
+		detector = new_detector;
+		detector.setMouseTransparent(false);
+		detector.addEventHandler(MouseEvent.MOUSE_ENTERED, entered);
+		detector.addEventHandler(MouseEvent.MOUSE_EXITED, exited);
 	}
 
 	public void setDesign(Layout design) {
 		this.design = design;
 		pane = this.design.getPane();
 		this.design.setLayoutPosition(positionx, positiony);
+		System.out.println(id + ": " + design.getClass());
 	}
 
-	public boolean isPressed(double mousex, double mousey) {
-		double[] sh = Positioning.positioning(positioning, 0);
-		int[] shift = { (int) Math.floor(button_width * sh[0]), (int) Math.floor(button_height * sh[1]) };
-		if (mousex >= positionx + shift[0] && mousex <= positionx + shift[0] + button_width
-				&& mousey >= positiony + shift[1] && mousey <= positiony + shift[1] + button_height) {
-			return true;
-		}
-		return false;
+	public boolean isPressed(double x, double y) {
+		return hovering;
 	}
 
 	protected void updatePosition() {

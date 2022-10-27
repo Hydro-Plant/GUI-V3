@@ -241,4 +241,8 @@ public class WarningLayout extends Layout {
 			}
 		}
 	}
+
+	public ImageView2 getSign() {
+		return wrn_sign;
+	}
 }

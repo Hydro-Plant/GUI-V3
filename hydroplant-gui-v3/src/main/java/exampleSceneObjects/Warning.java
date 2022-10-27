@@ -29,11 +29,11 @@ public class Warning extends Button {
 		super.setPosition(0, 0, 4);
 		setDesign(wl);
 		setActive(false);
+		super.setShape(wl.getSign());
 	}
 
 	public void setSize(double size) {
 		wl.setSize(size);
-		super.setShape(wl.getImageDim()[0] * size, wl.getImageDim()[1] * size);
 	}
 
 	public void setRectangle(double width) {

@@ -82,4 +82,8 @@ public class BackButton extends Layout {
 		arrow.setY2(0);
 		arrow.setPos(4);
 	}
+	
+	public Circle2 getCircle() {
+		return bg_circle;
+	}
 }

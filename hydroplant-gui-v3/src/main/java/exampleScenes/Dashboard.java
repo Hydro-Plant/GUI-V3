@@ -282,10 +282,9 @@ public class Dashboard extends Scene {
 		}
 
 		/*
-		 * if (selecting) { full_sized = false; selecting = true; for (int x = 0; x < 6;
-		 * x++) { if (buttons[x].isPressed(mousex, mousey)) { res = x;
-		 * buttons[x].design.toFront(); full_sized = true; selecting = false;
-		 * button_selection = x; break; } } }
+		 * if (selecting) { full_sized = false; selecting = true; for (int x = 0; x < 6; x++) { if
+		 * (buttons[x].isPressed(mousex, mousey)) { res = x; buttons[x].design.toFront(); full_sized = true;
+		 * selecting = false; button_selection = x; break; } } }
 		 */
 		return res;
 	}
@@ -305,10 +304,11 @@ public class Dashboard extends Scene {
 				(int) (variables.height
 						* (constants.height_perc + (1 - constants.height_perc) * constants.edge_distance)),
 				0);
-		temp_btn.setShape(btn_width, btn_height);
 
 		temp_btn_layout.setVirtualShape(btn_width, btn_height, 0);
 		temp_btn_layout.setStrokeWidth(constants.height_outline * variables.height);
+
+		temp_btn.setShape(temp_btn_layout.getRect());
 
 		temp_warning.setOrigin(
 				temp_btn.getPosition()[0] + (Positioning.positioning(0, 6)[0] + warning_pos_factor) * btn_width,
@@ -317,10 +317,10 @@ public class Dashboard extends Scene {
 		// Light Button
 		light_btn.setPosition((int) (variables.height * (1 - constants.height_perc) * constants.edge_distance),
 				(int) (variables.height * (1 - (1 - constants.height_perc) * constants.edge_distance)), 6);
-		light_btn.setShape(btn_width, btn_height);
 
 		light_btn_layout.setVirtualShape(btn_width, btn_height, 6);
 		light_btn_layout.setStrokeWidth(constants.height_outline * variables.height);
+		light_btn.setShape(light_btn_layout.getRect());
 
 		light_warning.setOrigin(
 				light_btn.getPosition()[0] + (Positioning.positioning(6, 6)[0] + warning_pos_factor) * btn_width,
@@ -330,10 +330,10 @@ public class Dashboard extends Scene {
 
 		ph_btn.setPosition(variables.width / 2, (int) (variables.height
 				* (constants.height_perc + (1 - constants.height_perc) * constants.edge_distance)), 1);
-		ph_btn.setShape(btn_width, btn_height);
 
 		ph_btn_layout.setVirtualShape(btn_width, btn_height, 1);
 		ph_btn_layout.setStrokeWidth(constants.height_outline * variables.height);
+		ph_btn.setShape(ph_btn_layout.getRect());
 
 		ph_warning.setOrigin(
 				ph_btn.getPosition()[0] + (Positioning.positioning(1, 6)[0] + warning_pos_factor) * btn_width,
@@ -343,10 +343,10 @@ public class Dashboard extends Scene {
 
 		ec_btn.setPosition(variables.width / 2,
 				(int) (variables.height * (1 - (1 - constants.height_perc) * constants.edge_distance)), 7);
-		ec_btn.setShape(btn_width, btn_height);
 
 		ec_btn_layout.setVirtualShape(btn_width, btn_height, 7);
 		ec_btn_layout.setStrokeWidth(constants.height_outline * variables.height);
+		ec_btn.setShape(ec_btn_layout.getRect());
 
 		ec_warning.setOrigin(
 				ec_btn.getPosition()[0] + (Positioning.positioning(7, 6)[0] + warning_pos_factor) * btn_width,
@@ -357,10 +357,10 @@ public class Dashboard extends Scene {
 		level_btn.setPosition(
 				(int) (variables.width - variables.height * (1 - constants.height_perc) * constants.edge_distance),
 				(int) (variables.height * (1 - (1 - constants.height_perc) * constants.edge_distance)), 8);
-		level_btn.setShape(btn_width, btn_height);
 
 		level_btn_layout.setVirtualShape(btn_width, btn_height, 8);
 		level_btn_layout.setStrokeWidth(constants.height_outline * variables.height);
+		level_btn.setShape(level_btn_layout.getRect());
 
 		level_warning.setOrigin(
 				level_btn.getPosition()[0] + (Positioning.positioning(8, 6)[0] + warning_pos_factor) * btn_width,
@@ -373,10 +373,10 @@ public class Dashboard extends Scene {
 				(int) (variables.height
 						* (constants.height_perc + (1 - constants.height_perc) * constants.edge_distance)),
 				2);
-		flow_btn.setShape(btn_width, btn_height);
 
 		flow_btn_layout.setVirtualShape(btn_width, btn_height, 2);
 		flow_btn_layout.setStrokeWidth(constants.height_outline * variables.height);
+		flow_btn.setShape(flow_btn_layout.getRect());
 
 		flow_warning.setOrigin(
 				flow_btn.getPosition()[0] + (Positioning.positioning(2, 6)[0] + warning_pos_factor) * btn_width,

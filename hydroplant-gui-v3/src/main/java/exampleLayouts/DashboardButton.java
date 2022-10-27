@@ -121,4 +121,8 @@ public class DashboardButton extends Layout {
 		mask.setWidth2(obj_width);
 		mask.setHeight2(obj_height);
 	}
+
+	public Rectangle2 getRect() {
+		return bg_rec;
+	}
 }

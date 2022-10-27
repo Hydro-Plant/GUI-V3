@@ -8,8 +8,12 @@ public class ImageView2 extends ImageView {
 	private int positioning = 0;
 	private double posx = 0;
 	private double posy = 0;
-
+	
 	public int test_id = 0;
+	
+	public ImageView2() {
+		super.setMouseTransparent(true);
+	}
 
 	private void updateImgView() {
 		if (super.getImage() != null) {

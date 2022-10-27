@@ -7,6 +7,10 @@ public class Rectangle2 extends Rectangle {
 	private int positioning = 0;
 	private double posx = 0;
 	private double posy = 0;
+	
+	public Rectangle2() {
+		super.setMouseTransparent(true);
+	}
 
 	private void updateRec() {
 		super.setX(posx + Positioning.positioning(positioning, 0)[0] * super.getWidth());
@@ -39,5 +43,16 @@ public class Rectangle2 extends Rectangle {
 	public void setHeight2(double height) {
 		super.setHeight(height);
 		updateRec();
+	}
+
+	public Rectangle2 copy() {
+		Rectangle2 copy = new Rectangle2();
+		copy.setX(this.getX());
+		copy.setY(this.getY());
+		copy.setWidth(this.getWidth());
+		copy.setHeight(this.getHeight());
+		copy.setArcHeight(this.getArcHeight());
+		copy.setArcWidth(this.getArcWidth());
+		return copy;
 	}
 }

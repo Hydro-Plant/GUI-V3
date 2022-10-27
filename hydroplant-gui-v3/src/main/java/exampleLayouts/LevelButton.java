@@ -60,7 +60,6 @@ public class LevelButton extends DashboardButton {
 		updateWave();
 	}
 
-	@Override
 	public void setShape(int obj_width, int obj_height) {
 		size_x = obj_width;
 		size_y = obj_height;
@@ -72,7 +71,6 @@ public class LevelButton extends DashboardButton {
 		super.setShape(obj_width, obj_height);
 	}
 
-	@Override
 	public void setVirtualShape(int obj_width, int obj_height, int positioning) {
 		blur.setRadius(blur_rad * variables.height);
 		super.setVirtualShape(obj_width, obj_height, positioning);
@@ -86,9 +84,9 @@ public class LevelButton extends DashboardButton {
 				+ Positioning.positioning(positioning, 6)[1] * size_y);
 	}
 
-	@Override
 	public void update() {
 		beta = (beta + 1 / variables.frameRate * speed * (2 * Math.PI)) % (2 * Math.PI);
+
 		wave_img = new WritableImage(size_x, (int) (wave_height * variables.height));
 		PixelWriter wave_pw = wave_img.getPixelWriter();
 		// boolean all_painted = false;

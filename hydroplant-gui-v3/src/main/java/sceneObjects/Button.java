@@ -1,64 +1,52 @@
 package sceneObjects;
 
 import gui.Layout;
-import javafx.event.EventHandler;
-import javafx.scene.Node;
-import javafx.scene.input.MouseEvent;
+import standard.Positioning;
 
 public class Button extends SceneObject {
-	private Node detector;
-	boolean hovering = false;
-
-	EventHandler<MouseEvent> entered;
-	EventHandler<MouseEvent> exited;
-
+	double button_height, button_width;
+	public Layout design;
+	
 	public Button() {
-		entered = new EventHandler<>() {
-			@Override
-			public void handle(MouseEvent event) {
-				System.out.println("Hovering: " + id);
-				hovering = true;
-			}
-		};
+		this.button_height = 0;
+		this.button_width = 0;
+		this.positionx = 0;
+		this.positiony = 0;
+		this.positioning = 0;
+	}
 
-		exited = new EventHandler<>() {
-			@Override
-			public void handle(MouseEvent event) {
-				System.out.println("Not Hovering: " + id);
-				hovering = false;
-			}
-		};
+	public void setShape(double d, double e) {
+		this.button_height = e;
+		this.button_width = d;
 	}
 
 	public void setDesign(Layout design) {
-		if (this.getChildren().size() <= 0)
-			this.getChildren().add(design);
-		else
-			this.getChildren().set(0, design);
+		this.design = design;
+		pane = this.design.getPane();
+		this.design.setLayoutPosition(positionx, positiony);
 	}
 
-	public void setButtonShape(Node detection) {
-		if (detector != null) {
-			detector.removeEventHandler(MouseEvent.MOUSE_ENTERED, entered);
-			detector.removeEventHandler(MouseEvent.MOUSE_EXITED, exited);
+	public boolean isPressed(double mousex, double mousey) {
+		double[] sh = Positioning.positioning(positioning, 0);
+		int[] shift = { (int) Math.floor(button_width * sh[0]), (int) Math.floor(button_height * sh[1]) };
+		if (mousex >= positionx + shift[0] && mousex <= positionx + shift[0] + button_width
+				&& mousey >= positiony + shift[1] && mousey <= positiony + shift[1] + button_height) {
+			return true;
 		}
-		detector = detection;
-		detector.addEventHandler(MouseEvent.MOUSE_ENTERED, entered);
-		detector.addEventHandler(MouseEvent.MOUSE_EXITED, exited);
+		return false;
 	}
 
-	public boolean isButtonPressed() {
-		return hovering;
+	protected void updatePosition() {
+		if (design != null)
+			design.setLayoutPosition(positionx, positiony);
 	}
 
-	@Override
 	public void update() {
-		if (this.getChildren().get(0) != null)
-			((Layout) this.getChildren().get(0)).update();
+		if (design != null)
+			design.update();
 	}
-
-	@Override
+	
 	public void toFront() {
-		super.getChildren().get(0).toFront();
+		design.toFront();
 	}
 }

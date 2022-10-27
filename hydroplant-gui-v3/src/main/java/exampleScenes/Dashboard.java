@@ -7,15 +7,16 @@ import exampleLayouts.LightButton;
 import exampleLayouts.PHButton;
 import exampleLayouts.TempButton;
 import exampleSceneObjects.Warning;
+import gui.Layout;
 import gui.Scene;
 import gui.constants;
 import gui.variables;
 import sceneObjects.Button;
 import standard.Bezier;
 import standard.Deckel;
+import standard.Vector;
 import standard.Map;
 import standard.Positioning;
-import standard.Vector;
 
 public class Dashboard extends Scene {
 	final double warning_width_factor = 0.9;
@@ -205,13 +206,12 @@ public class Dashboard extends Scene {
 
 	// ------ Scene activies
 
-	@Override
 	public void externalButton(int button) {
 		switch (button) {
 		case 0:
-			for (Warning warning : warnings) {
-				if (warning.getRealStatus() != 0) {
-					warning.setStatus(false);
+			for (int x = 0; x < warnings.length; x++) {
+				if (warnings[x].getRealStatus() != 0) {
+					warnings[x].setStatus(false);
 					break;
 				}
 			}
@@ -219,14 +219,13 @@ public class Dashboard extends Scene {
 		}
 	}
 
-	@Override
 	public void loadMode(int mode) {
 		full_sized = false;
 		button_selection = mode;
 		button_factor = 1;
 		selecting = true;
 
-		buttons[mode].toFront();
+		buttons[mode].design.toFront();
 	}
 
 	void updateShape() {
@@ -265,33 +264,32 @@ public class Dashboard extends Scene {
 		}
 	}
 
-	@Override
-	public int mouseClick() { // 0: Temp, 1: Light, 2: PH, 3: EC, 4: Flow, 5: Level
+	public int mouseClick(double mousex, double mousey) { // 0: Temp, 1: Light, 2: PH, 3: EC, 4: Flow, 5: Level
 		int res = -1;
 
 		boolean warning_active = false;
-		for (Warning warning : warnings)
-			if (warning.getRealStatus() != 0) {
+		for (int x = 0; x < warnings.length; x++)
+			if (warnings[x].getRealStatus() != 0) {
 				warning_active = true;
 				break;
 			}
 
 		if (!warning_active) {
-			for (Warning warning : warnings)
-				if (warning.isPressed()) {
+			for (int x = 0; x < warnings.length; x++)
+				if (warnings[x].isPressed(mousex, mousey)) {
 
 				}
 		}
 
 		/*
-		 * if (selecting) { full_sized = false; selecting = true; for (int x = 0; x < 6; x++) { if
-		 * (buttons[x].isPressed(mousex, mousey)) { res = x; buttons[x].design.toFront(); full_sized = true;
-		 * selecting = false; button_selection = x; break; } } }
+		 * if (selecting) { full_sized = false; selecting = true; for (int x = 0; x < 6;
+		 * x++) { if (buttons[x].isPressed(mousex, mousey)) { res = x;
+		 * buttons[x].design.toFront(); full_sized = true; selecting = false;
+		 * button_selection = x; break; } } }
 		 */
 		return res;
 	}
 
-	@Override
 	public void updateSize() {
 		btn_width = (variables.width - (int) (variables.height * (1 - constants.height_perc)
 				* (2 * constants.edge_distance + 2 * constants.button_distance))) / 3;
@@ -305,8 +303,9 @@ public class Dashboard extends Scene {
 		// Temperaur Button
 		temp_btn.setPosition((int) (variables.height * (1 - constants.height_perc) * constants.edge_distance),
 				(int) (variables.height
-						* (constants.height_perc + (1 - constants.height_perc) * constants.edge_distance)));
-		temp_btn.setShape(temp_btn_layout.getRec());
+						* (constants.height_perc + (1 - constants.height_perc) * constants.edge_distance)),
+				0);
+		temp_btn.setShape(btn_width, btn_height);
 
 		temp_btn_layout.setVirtualShape(btn_width, btn_height, 0);
 		temp_btn_layout.setStrokeWidth(constants.height_outline * variables.height);
@@ -317,8 +316,8 @@ public class Dashboard extends Scene {
 
 		// Light Button
 		light_btn.setPosition((int) (variables.height * (1 - constants.height_perc) * constants.edge_distance),
-				(int) (variables.height * (1 - (1 - constants.height_perc) * constants.edge_distance)));
-		light_btn.setShape(light_btn_layout.getRec());
+				(int) (variables.height * (1 - (1 - constants.height_perc) * constants.edge_distance)), 6);
+		light_btn.setShape(btn_width, btn_height);
 
 		light_btn_layout.setVirtualShape(btn_width, btn_height, 6);
 		light_btn_layout.setStrokeWidth(constants.height_outline * variables.height);
@@ -330,8 +329,8 @@ public class Dashboard extends Scene {
 		// PH Button
 
 		ph_btn.setPosition(variables.width / 2, (int) (variables.height
-				* (constants.height_perc + (1 - constants.height_perc) * constants.edge_distance)));
-		ph_btn.setShape(ph_btn_layout.getRec());
+				* (constants.height_perc + (1 - constants.height_perc) * constants.edge_distance)), 1);
+		ph_btn.setShape(btn_width, btn_height);
 
 		ph_btn_layout.setVirtualShape(btn_width, btn_height, 1);
 		ph_btn_layout.setStrokeWidth(constants.height_outline * variables.height);
@@ -343,8 +342,8 @@ public class Dashboard extends Scene {
 		// EC Button
 
 		ec_btn.setPosition(variables.width / 2,
-				(int) (variables.height * (1 - (1 - constants.height_perc) * constants.edge_distance)));
-		ec_btn.setShape(ec_btn_layout.getRec());
+				(int) (variables.height * (1 - (1 - constants.height_perc) * constants.edge_distance)), 7);
+		ec_btn.setShape(btn_width, btn_height);
 
 		ec_btn_layout.setVirtualShape(btn_width, btn_height, 7);
 		ec_btn_layout.setStrokeWidth(constants.height_outline * variables.height);
@@ -357,8 +356,8 @@ public class Dashboard extends Scene {
 
 		level_btn.setPosition(
 				(int) (variables.width - variables.height * (1 - constants.height_perc) * constants.edge_distance),
-				(int) (variables.height * (1 - (1 - constants.height_perc) * constants.edge_distance)));
-		level_btn.setShape(level_btn_layout.getRec());
+				(int) (variables.height * (1 - (1 - constants.height_perc) * constants.edge_distance)), 8);
+		level_btn.setShape(btn_width, btn_height);
 
 		level_btn_layout.setVirtualShape(btn_width, btn_height, 8);
 		level_btn_layout.setStrokeWidth(constants.height_outline * variables.height);
@@ -372,8 +371,9 @@ public class Dashboard extends Scene {
 		flow_btn.setPosition(
 				(int) (variables.width - variables.height * (1 - constants.height_perc) * constants.edge_distance),
 				(int) (variables.height
-						* (constants.height_perc + (1 - constants.height_perc) * constants.edge_distance)));
-		flow_btn.setShape(flow_btn_layout.getRec());
+						* (constants.height_perc + (1 - constants.height_perc) * constants.edge_distance)),
+				2);
+		flow_btn.setShape(btn_width, btn_height);
 
 		flow_btn_layout.setVirtualShape(btn_width, btn_height, 2);
 		flow_btn_layout.setStrokeWidth(constants.height_outline * variables.height);
@@ -417,7 +417,6 @@ public class Dashboard extends Scene {
 		flow_warning.setRectangle(warning_width_factor * variables.width);
 	}
 
-	@Override
 	public void update() {
 		updateShape();
 		super.update();

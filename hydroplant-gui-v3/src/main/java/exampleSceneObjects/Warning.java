@@ -2,7 +2,7 @@ package exampleSceneObjects;
 
 import exampleLayouts.WarningLayout;
 import gui.variables;
-import javafx2.ImageView2;
+import javafx.scene.paint.Color;
 import sceneObjects.Button;
 import standard.Bezier;
 import standard.Vector;
@@ -26,15 +26,14 @@ public class Warning extends Button {
 
 	public Warning() {
 		wl = new WarningLayout();
-		super.setPosition(0, 0);
+		super.setPosition(0, 0, 4);
 		setDesign(wl);
 		setActive(false);
-		ImageView2 sign = wl.getSign();
-		super.setButtonShape(sign);
 	}
 
 	public void setSize(double size) {
 		wl.setSize(size);
+		super.setShape(wl.getImageDim()[0] * size, wl.getImageDim()[1] * size);
 	}
 
 	public void setRectangle(double width) {
@@ -52,48 +51,48 @@ public class Warning extends Button {
 	public int getRealStatus() {
 		return wl.getRealStatus();
 	}
-
+	
 	public void setStatus(boolean open) {
-		if (open) {
+		if(open) {
 			wl.setStatus(open);
-		} else {
+		}else {
 			wl.setStatus(false);
 			moving = true;
 			status = false;
 		}
 	}
-
+	
 	public void setActive(boolean active) {
 		this.active = active;
-		if (active) {
+		if(active) {
 			wl.setAlpha(true);
-		} else {
+		}else {
 			wl.setStatus(false);
 			moving = true;
 			status = false;
 		}
 	}
-
+	
 	public void setOrigin(double posx, double posy) {
 		or_x = posx;
 		or_y = posy;
-		if (pos_factor == 0) {
+		if(pos_factor == 0) {
 			super.setPosition(posx, posy);
 		}
 	}
-
+	
 	public void setSelectedPos(double posx, double posy) {
 		la_x = posx;
 		la_y = posy;
-		if (pos_factor == 1) {
+		if(pos_factor == 1) {
 			super.setPosition(posx, posy);
 		}
 	}
 
 	@Override
-	public boolean isButtonPressed() {
+	public boolean isPressed(double mousex, double mousey) {
 		if (active) {
-			if (super.isButtonPressed()) {
+			if(super.isPressed(mousex, mousey)) {
 				moving = true;
 				status = true;
 				super.toFront();
@@ -103,7 +102,6 @@ public class Warning extends Button {
 		return false;
 	}
 
-	@Override
 	public void update() {
 		if (moving) {
 			if (status) {
@@ -113,7 +111,7 @@ public class Warning extends Button {
 					wl.setStatus(true);
 					moving = false;
 				}
-			} else if (wl.getRealStatus() == 0) {
+			} else if(wl.getRealStatus() == 0) {
 				pos_factor -= moving_speed / variables.frameRate;
 				if (pos_factor <= 0) {
 					pos_factor = 0;
@@ -124,9 +122,8 @@ public class Warning extends Button {
 
 			double bez_factor = Bezier.bezier_curve_2d(pos_factor, new Vector(bezier_space[0], 0),
 					new Vector(1 - bezier_space[1], 1)).y;
-
-			super.setPosition(la_x * bez_factor + or_x * (1 - bez_factor),
-					(la_y + wl.getHeight() / 2) * bez_factor + or_y * (1 - bez_factor));
+			
+			super.setPosition(la_x * bez_factor + or_x * (1-bez_factor), (la_y + wl.getHeight() / 2) * bez_factor + or_y * (1-bez_factor));
 		}
 		super.update();
 	}

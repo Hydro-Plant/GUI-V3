@@ -53,9 +53,10 @@ public class BoundingBox {
 
 	public boolean intersecting(int positionx, int positiony) {
 		/*
-		 * println("X Boundry"); println(-pos_change_x * size.x + position.x); println((1 - pos_change_x) *
-		 * size.x + position.x); println("Y Boundry"); println(-pos_change_y * size.y + position.y);
-		 * println((1 - pos_change_y) * size.y + position.y); println("\n--------------------\n");
+		 * println("X Boundry"); println(-pos_change_x * size.x + position.x);
+		 * println((1 - pos_change_x) * size.x + position.x); println("Y Boundry");
+		 * println(-pos_change_y * size.y + position.y); println((1 - pos_change_y) *
+		 * size.y + position.y); println("\n--------------------\n");
 		 */
 		return positionx >= -pos_change_x * size.x + position.x && positionx <= (1 - pos_change_x) * size.x + position.x
 				&& positiony >= -pos_change_y * size.y + position.y

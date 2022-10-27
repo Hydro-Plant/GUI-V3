@@ -61,7 +61,7 @@ public class Text2 extends Text {
 		super.setText(text);
 		updateText();
 	}
-
+	
 	public void setAlpha(double alpha) {
 		this.setFill(Alpha.changeAlpha((Color) getFill(), alpha));
 	}

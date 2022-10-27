@@ -11,10 +11,10 @@ public class SceneHandler {
 		int event = active_scene.scene.sceneEvents();
 		boolean res = false;
 		if (event != -1) {
-			for (SceneDependency element : active_scene.deps) {
-				if (element.trigger == event) {
-					int new_mode = element.loading_mode;
-					active_scene = element.new_scene;
+			for (int x = 0; x < active_scene.deps.size(); x++) {
+				if (active_scene.deps.get(x).trigger == event) {
+					int new_mode = active_scene.deps.get(x).loading_mode;
+					active_scene = active_scene.deps.get(x).new_scene;
 					active_scene.scene.loadMode(new_mode);
 					active_scene.scene.updateSize();
 					res = true;
@@ -34,7 +34,7 @@ public class SceneHandler {
 		active_scene.scene.externalButton(button);
 	}
 
-	public void mouseClick() {
-		active_scene.scene.mouseClick();
+	public void mouseClick(double mousex, double mousey) {
+		active_scene.scene.mouseClick(mousex, mousey);
 	}
 }

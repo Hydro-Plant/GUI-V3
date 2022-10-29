@@ -15,9 +15,9 @@ public class Button extends SceneObject {
 		this.positioning = 0;
 	}
 
-	public void setShape(double d, double e) {
-		this.button_height = e;
-		this.button_width = d;
+	public void setShape(double width, double height) {
+		this.button_height = height;
+		this.button_width = width;
 	}
 
 	public void setDesign(Layout design) {

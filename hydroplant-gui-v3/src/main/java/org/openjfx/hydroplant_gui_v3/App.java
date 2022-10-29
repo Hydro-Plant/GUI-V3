@@ -15,6 +15,7 @@ import exampleLayouts.TempButton;
 import exampleScenes.Dashboard;
 import exampleScenes.LightScene;
 import exampleScenes.TempScene;
+import exampleScenes.TestScene;
 import exampleScenes.Topbar;
 import gui.SceneBundle;
 import gui.SceneHandler;
@@ -56,7 +57,9 @@ public class App extends Application {
 	boolean level_warning = false;
 
 	boolean shitChanged = true;
-
+	
+	TestScene tests;
+	
 	Topbar tb;
 	Dashboard db;
 	TempScene ts;
@@ -87,7 +90,10 @@ public class App extends Application {
 			variables.width = 1366;
 
 			SceneHandler sh;
-
+			
+			tests = new TestScene();
+			SceneBundle tests_sb = new SceneBundle(tests);
+			
 			db = new Dashboard();
 			db.setTemp(0);
 			SceneBundle db_sb = new SceneBundle(db);
@@ -116,8 +122,8 @@ public class App extends Application {
 			// Init scene handler
 
 			sh = new SceneHandler();
-			sh.setScene(db_sb);
-			root.getChildren().add(db.root);
+			sh.setScene(tests_sb);
+			root.getChildren().add(tests.root);
 
 			Scene scene = new Scene(root, 1366, 768); // Sets up scene
 

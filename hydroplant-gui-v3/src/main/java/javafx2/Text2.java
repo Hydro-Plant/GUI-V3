@@ -41,6 +41,7 @@ public class Text2 extends Text {
 
 	public void setSize(double size) {
 		setFont(Font.font("Semi-Coder", size));
+		updateText();
 	}
 
 	public void setX2(double x) {

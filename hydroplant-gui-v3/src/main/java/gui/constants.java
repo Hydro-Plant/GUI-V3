@@ -6,7 +6,7 @@ public class constants {
 	// -------------------------------------- Everything
 	
 	public final static Color outline_col = Color.BLACK;
-	public final static double height_outline = 0.0012;
+	public final static double height_outline = 0.001;
 	
 	// -------------------------------------- Topbar
 	public final static double height_perc = 0.1;

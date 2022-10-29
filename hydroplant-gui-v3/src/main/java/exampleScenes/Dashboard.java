@@ -6,6 +6,7 @@ import exampleLayouts.LevelButton;
 import exampleLayouts.LightButton;
 import exampleLayouts.PHButton;
 import exampleLayouts.TempButton;
+import exampleSceneObjects.LoadingBar;
 import exampleSceneObjects.Warning;
 import gui.Layout;
 import gui.Scene;
@@ -104,7 +105,7 @@ public class Dashboard extends Scene {
 				flow_btn_layout, level_btn_layout };
 
 		warnings = new Warning[] { temp_warning, light_warning, ph_warning, ec_warning, level_warning, flow_warning };
-
+		
 		addObject(temp_btn);
 		addObject(light_btn);
 		addObject(ph_btn);
@@ -118,7 +119,7 @@ public class Dashboard extends Scene {
 		addObject(ec_warning);
 		addObject(level_warning);
 		addObject(flow_warning);
-
+		
 		updateShape();
 	}
 

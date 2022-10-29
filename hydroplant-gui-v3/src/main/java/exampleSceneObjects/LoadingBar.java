@@ -28,6 +28,8 @@ public class LoadingBar extends FlatLayout {
 	}
 	
 	public void setFactor(double factor) {
+		if(factor < 0) factor = 0;
+		if(factor > 1) factor = 1;
 		this.factor = factor;
 		updateSize();
 	}

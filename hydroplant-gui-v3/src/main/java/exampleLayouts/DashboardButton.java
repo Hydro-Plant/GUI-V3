@@ -12,8 +12,6 @@ import standard.Alpha;
 import standard.Positioning;
 
 public class DashboardButton extends Layout {
-	int positioning; // Button layout information
-
 	Rectangle2 bg_rec; // Button layout objects
 	Rectangle2 mask;
 	Text2 title;

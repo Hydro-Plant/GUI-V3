@@ -47,6 +47,10 @@ public class SceneObject {
 		updatePosition();
 	}
 	
+	public void setPos(int positioning) {
+		this.positioning = positioning;
+	}
+	
 	public double[] getPosition() {
 		return new double[] {this.positionx, this.positiony};
 	}

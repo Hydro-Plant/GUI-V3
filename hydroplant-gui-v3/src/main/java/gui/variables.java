@@ -1,7 +1,9 @@
 package gui;
 
 public class variables {
-	public static int width = 0;
-	public static int height = 0;
+	public static double width = 0;
+	public static double height = 0;
 	public static double frameRate = 0;
+	public static double mousex = 0;
+	public static double mousey = 0;
 }

@@ -14,7 +14,7 @@ public class Scene {
 	protected long id;
 
 	public Scene() {
-		scene_objects = new ArrayList<SceneObject>();
+		scene_objects = new ArrayList<>();
 		this.id = IDCounter.getSceneObjectID();
 	}
 
@@ -45,13 +45,37 @@ public class Scene {
 		return -1;
 	}
 
+	public void mousePressed(double mousex, double mousey) {
+
+	}
+
+	public void mouseReleased(double mousex, double mousey) {
+
+	}
+
+	public void mouseDragged(double mousex, double mousey) {
+
+	}
+
+	public void mouseMoved(double mousex, double mousey) {
+
+	}
+
 	public void updateSize() { // Wird ausgeführt, wenn sich die Größe der Stage ändert
 
 	}
 
+	public void toFront() {
+		root.toFront();
+	}
+
+	public void toBack() {
+		root.toBack();
+	}
+
 	public void update() { // Wird jedes Frame ausgeführt
-		for (int x = 0; x < scene_objects.size(); x++) {
-			scene_objects.get(x).update();
+		for (SceneObject scene_object : scene_objects) {
+			scene_object.update();
 		}
 	}
 }

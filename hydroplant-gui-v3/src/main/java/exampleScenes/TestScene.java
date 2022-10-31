@@ -1,50 +1,147 @@
 package exampleScenes;
 
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.temporal.TemporalUnit;
+import java.util.ArrayList;
 
-import exampleLayouts.RemoveLayout;
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+
 import exampleSceneObjects.TimeLapse;
+import exampleSceneObjects.TimeLapseList;
 import gui.Scene;
 import gui.constants;
 import gui.variables;
 import javafx2.Rectangle2;
-import sceneObjects.FlatLayout;
 import sceneObjects.MiniScene;
+import timelapse.TimeLapseData;
 
 public class TestScene extends Scene {
 	final double scroll_factor = 0.9;
-	
-	TimeLapse tl1;
-	
+
+	TimeLapseList tll;
+
 	Rectangle2 scroll_clip;
 	MiniScene scroll;
-	
+
+	MqttClient timelapse_client;
+	MemoryPersistence pers;
+
+	ArrayList<TimeLapse> data_tl;
+	boolean newData = false;
+
 	public TestScene() {
+
+		// Mqtt Startup
+
+		pers = new MemoryPersistence();
+
+		try {
+			timelapse_client = new MqttClient("tcp://localhost:1883", "timelapse", pers);
+			timelapse_client.connect();
+			System.out.println("Timelapse-Client communication established");
+			timelapse_client.subscribe(new String[] { "timelapse/data" });
+
+			System.out.println("Timelapse-Client subscriptions completed");
+			timelapse_client.setCallback(new MqttCallback() {
+				@Override
+				public void messageArrived(String topic, MqttMessage message) throws Exception {
+					switch (topic.toUpperCase()) {
+					case "TIMELAPSE/DATA":
+						Gson gson = new GsonBuilder().setPrettyPrinting().create();
+						ArrayList<TimeLapseData> data = gson.fromJson(message.toString(),
+								new TypeToken<ArrayList<TimeLapseData>>() {
+								}.getType());
+						data_tl = new ArrayList<>();
+
+						for (int x = 0; x < data.size(); x++) {
+							data_tl.add(TimeLapse.fromData(data.get(x)));
+						}
+
+						newData = true;
+
+						break;
+					}
+				}
+
+				@Override
+				public void connectionLost(Throwable cause) {
+
+				}
+
+				@Override
+				public void deliveryComplete(IMqttDeliveryToken token) {
+
+				}
+			});
+			System.out.println("Timelapse-Client callback set");
+		} catch (MqttException e) {
+			System.out.println("Timelapse-Client failed!");
+			e.printStackTrace();
+		}
+		
 		scroll = new MiniScene();
 		scroll.setPosition(scroll_factor, scroll_factor);
+
+		tll = new TimeLapseList();
+		tll.setPosition(20, 80);
+		tll.setShape(1300, 650);
+		tll.setTLHeight(300);
 		
-		tl1 = new TimeLapse();
-		tl1.setShape(1000, 250);
-		tl1.setPosition(100, 200, 0);
-		tl1.setDate(LocalDate.of(2003, 12, 28), LocalDate.of(2043, 3, 17));
-		tl1.setSpeed(32);
-		tl1.setDuration(Duration.ofSeconds(34289));
-		tl1.setFPS(59.3424);
-		tl1.setPictures(435);
-		tl1.setTime(LocalTime.of(1, 5), LocalTime.of(5, 23, 46));
-		tl1.setMode(2);
+		try {
+			timelapse_client.publish("timelapse/get", new MqttMessage("true".getBytes()));
+		} catch (MqttException e) {
+			System.out.println("Could not get timelapse");
+			e.printStackTrace();
+		}
 		
-		addObject(tl1);
+		addObject(tll);
 	}
-	
-	public void updateSize() {
-		tl1.setOutline(variables.height * constants.height_outline);
+
+	public void update() {
+		if (newData) {
+			newData = false;
+			tll.setTimeLapse(data_tl);
+		}
+		super.update();
 	}
 	
 	public int mouseClick(double mousex, double mousey) {
+		int pressed = tll.mouseClicked(mousex, mousey);
+		if(pressed != -1) {
+			try {
+				timelapse_client.publish("timelapse/delete", new MqttMessage(Integer.toString(pressed).getBytes()));
+			} catch (MqttException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		return -1;
+	}
+	
+	@Override
+	public void mousePressed(double mousex, double mousey) {
+		tll.mousePressed(mousex, mousey);
+	}
+
+	@Override
+	public void mouseReleased(double mousex, double mousey) {
+		tll.mouseReleased(mousex, mousey);
+	}
+
+	@Override
+	public void mouseDragged(double mousex, double mousey) {
+		tll.mouseDragged(mousex, mousey);
+	}
+
+	@Override
+	public void updateSize() {
+		tll.setOutline(variables.height * constants.height_outline);
 	}
 }

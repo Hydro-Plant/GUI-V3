@@ -2,7 +2,6 @@ package exampleSceneObjects;
 
 import exampleLayouts.WarningLayout;
 import gui.variables;
-import javafx.scene.paint.Color;
 import sceneObjects.Button;
 import standard.Bezier;
 import standard.Vector;
@@ -51,7 +50,7 @@ public class Warning extends Button {
 	public int getRealStatus() {
 		return wl.getRealStatus();
 	}
-	
+
 	public void setStatus(boolean open) {
 		if(open) {
 			wl.setStatus(open);
@@ -61,7 +60,7 @@ public class Warning extends Button {
 			status = false;
 		}
 	}
-	
+
 	public void setActive(boolean active) {
 		this.active = active;
 		if(active) {
@@ -72,7 +71,7 @@ public class Warning extends Button {
 			status = false;
 		}
 	}
-	
+
 	public void setOrigin(double posx, double posy) {
 		or_x = posx;
 		or_y = posy;
@@ -80,7 +79,7 @@ public class Warning extends Button {
 			super.setPosition(posx, posy);
 		}
 	}
-	
+
 	public void setSelectedPos(double posx, double posy) {
 		la_x = posx;
 		la_y = posy;
@@ -102,6 +101,7 @@ public class Warning extends Button {
 		return false;
 	}
 
+	@Override
 	public void update() {
 		if (moving) {
 			if (status) {
@@ -122,7 +122,7 @@ public class Warning extends Button {
 
 			double bez_factor = Bezier.bezier_curve_2d(pos_factor, new Vector(bezier_space[0], 0),
 					new Vector(1 - bezier_space[1], 1)).y;
-			
+
 			super.setPosition(la_x * bez_factor + or_x * (1-bez_factor), (la_y + wl.getHeight() / 2) * bez_factor + or_y * (1-bez_factor));
 		}
 		super.update();

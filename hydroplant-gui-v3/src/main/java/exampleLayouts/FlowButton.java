@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import gui.constants;
 import gui.variables;
+import javafx.scene.effect.MotionBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
@@ -15,7 +16,6 @@ import poissonDisc.PoissonDisc;
 import poissonDisc.ReturnPoint;
 import standard.Positioning;
 import standard.Vector;
-import javafx.scene.effect.*;
 
 public class FlowButton extends DashboardButton {
 	ImageView2 bubbles;
@@ -30,8 +30,8 @@ public class FlowButton extends DashboardButton {
 
 	Color bg = Color.rgb(100, 100, 255);
 	double value = 0;
-	int size_x = 0;
-	int size_y = 0;
+	double size_x = 0;
+	double size_y = 0;
 	double pic_size;
 
 	MotionBlur mb = new MotionBlur();
@@ -42,9 +42,9 @@ public class FlowButton extends DashboardButton {
 		reloadImages();
 
 		bb = new BoundingBox(500, 500, 0, 500, 500);
-		pd = new PoissonDisc(variables.width + (int) Math.floor(4 * constants.r * variables.height),
-				variables.height + (int) Math.floor(4 * constants.r * variables.height),
-				constants.r * variables.height);
+		pd = new PoissonDisc((int) variables.width + (int) Math.floor(4 * constants.r * variables.height),
+				(int) variables.height + (int) Math.floor(4 * constants.r * variables.height),
+				constants.r * (int) variables.height);
 		pd.setBoundingBox(bb);
 
 		bubbles = new ImageView2();
@@ -69,7 +69,7 @@ public class FlowButton extends DashboardButton {
 
 	void reloadImages() {
 		double max_pic = 0;
-		bubble_images = new ArrayList<Image>();
+		bubble_images = new ArrayList<>();
 		for (int x = 0; x < size_perc.length; x++) {
 			Image im = new Image("file:pics/bubble" + x + ".png");
 			if (im.getWidth() > max_pic)
@@ -84,22 +84,24 @@ public class FlowButton extends DashboardButton {
 		}
 	}
 
-	public void setShape(int obj_width, int obj_height) {
+	public void setShape(double obj_width, double obj_height) {
 		size_x = obj_width;
 		size_y = obj_height;
-		bb.setSize(obj_width + (int) Math.ceil(variables.height * constants.bubble_size_max),
-				obj_height - (int) Math.ceil(variables.height * (2 * constants.bubble_edge_dist)));
+		bb.setSize((int) obj_width + (int) Math.ceil(variables.height * constants.bubble_size_max),
+				(int) obj_height - (int) Math.ceil(variables.height * (2 * constants.bubble_edge_dist)));
 		super.setShape(obj_width, obj_height);
 	}
 
-	public void setVirtualShape(int obj_width, int obj_height, int positioning) {
+	public void setVirtualShape(double obj_width, double obj_height, int positioning) {
 		bubbles.setPos(positioning);
-		pd = new PoissonDisc(variables.width + (int) Math.floor(4 * constants.r * variables.height),
-				variables.height + (int) Math.floor(4 * constants.r * variables.height),
-				constants.r * variables.height);
-		pd.setBoundingBox(bb);
-		pd.setFirst();
-		reloadImages();
+		if (this.size_x != obj_height || this.size_y != obj_width) {
+			pd = new PoissonDisc((int) variables.width + (int) Math.floor(4 * constants.r * variables.height),
+					(int) variables.height + (int) Math.floor(4 * constants.r * variables.height),
+					constants.r * (int) variables.height);
+			pd.setBoundingBox(bb);
+			pd.setFirst();
+			reloadImages();
+		}
 
 		super.setVirtualShape(obj_width, obj_height, positioning);
 	}
@@ -121,22 +123,22 @@ public class FlowButton extends DashboardButton {
 		pd.updateGrid(new Vector(constants.speed_factor * this.value * time_passed, 0));
 		pd.calcMissing();
 
-		bubbles_img = new WritableImage(size_x, size_y);
+		bubbles_img = new WritableImage((int) size_x, (int) size_y);
 
 		double[] shift = Positioning.positioning(this.positioning, 0);
 		double[] ges_shift = { positionx + shift[0] * size_x, positiony + shift[1] * size_y };
 		PixelWriter bubbles_pw = bubbles_img.getPixelWriter();
 		ArrayList<ReturnPoint> points = pd.getPoints();
 
-		for (int x = 0; x < points.size(); x++) {
-			switch (points.get(x).getMode()) {
+		for (ReturnPoint point : points) {
+			switch (point.getMode()) {
 			case 0:
 				for (int y = 0; y < size_perc.length; y++) {
-					if (points.get(x).getRand() <= size_perc[y]) {
+					if (point.getRand() <= size_perc[y]) {
 						Vector b_pos = new Vector(
-								points.get(x).getPos().x - Math.floor(2 * constants.r * variables.height)
+								point.getPos().x - Math.floor(2 * constants.r * variables.height)
 										- ges_shift[0],
-								points.get(x).getPos().y - Math.floor(2 * constants.r * variables.height)
+								point.getPos().y - Math.floor(2 * constants.r * variables.height)
 										- ges_shift[1]);
 
 						// - Math.floor(2 * constants.r * variables.height) --> Disk grid is slightly
@@ -158,9 +160,9 @@ public class FlowButton extends DashboardButton {
 								if (local_x < 0) {
 									local_x_with_boundry = 0;
 									local_width_with_boundry += local_x;
-									local_image_start = (int) Math.abs(local_x);
+									local_image_start = Math.abs(local_x);
 								} else if (local_x > size_x - bubble.getWidth()) {
-									local_width_with_boundry = (size_x - local_x);
+									local_width_with_boundry = ((int) size_x - local_x);
 								}
 
 								bubbles_pw.setPixels(local_x_with_boundry, local_y, local_width_with_boundry,

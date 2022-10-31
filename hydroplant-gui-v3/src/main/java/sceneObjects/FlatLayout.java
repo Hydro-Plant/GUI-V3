@@ -19,17 +19,15 @@ public class FlatLayout extends SceneObject {
 		this.design.setLayoutPosition(positionx, positiony);
 	}
 
+	@Override
 	protected void updatePosition() {
 		if (design != null)
 			design.setLayoutPosition(positionx, positiony);
 	}
 
+	@Override
 	public void update() {
 		if (design != null)
 			design.update();
-	}
-	
-	public void toFront() {
-		design.toFront();
 	}
 }

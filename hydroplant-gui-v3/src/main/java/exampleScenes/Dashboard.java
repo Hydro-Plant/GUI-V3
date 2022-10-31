@@ -1,23 +1,28 @@
 package exampleScenes;
 
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+
 import exampleLayouts.DashboardButton;
 import exampleLayouts.FlowButton;
 import exampleLayouts.LevelButton;
 import exampleLayouts.LightButton;
 import exampleLayouts.PHButton;
 import exampleLayouts.TempButton;
-import exampleSceneObjects.LoadingBar;
 import exampleSceneObjects.Warning;
-import gui.Layout;
 import gui.Scene;
 import gui.constants;
 import gui.variables;
 import sceneObjects.Button;
 import standard.Bezier;
 import standard.Deckel;
-import standard.Vector;
 import standard.Map;
 import standard.Positioning;
+import standard.Vector;
 
 public class Dashboard extends Scene {
 	final double warning_width_factor = 0.9;
@@ -53,17 +58,140 @@ public class Dashboard extends Scene {
 	int button_selection = 0; // 0: Temp, 1: Light, 2: PH, 3: EC, 4: Flow, 5: Level
 	double button_factor = 0;
 
-	int btn_width;
-	int btn_height;
-	int full_width;
-	int full_height;
+	double btn_width;
+	double btn_height;
+	double full_width;
+	double full_height;
 
 	Button[] buttons;
 	DashboardButton[] button_layouts;
 
 	Warning[] warnings;
 
+	MqttClient dashboard_client;
+	MemoryPersistence pers;
+
+	double temp = 0;
+	double light = 0;
+	boolean lightStatus = false;
+	double ph = 0;
+	double flow = 0;
+	double level = 0;
+
+	String temp_warning_text = "";
+	String light_warning_text = "";
+	String ph_warning_text = "";
+	String ec_warning_text = "";
+	String flow_warning_text = "";
+	String level_warning_text = "";
+
+	boolean temp_warning_bool = false;
+	boolean light_warning_bool = false;
+	boolean ph_warning_bool = false;
+	boolean ec_warning_bool = false;
+	boolean flow_warning_bool = false;
+	boolean level_warning_bool = false;
+
+	boolean shitChanged = true;
+
 	public Dashboard() {
+		// Mqtt Startup
+
+		pers = new MemoryPersistence();
+
+		try {
+			dashboard_client = new MqttClient("tcp://localhost:1883", "dashboard", pers);
+			dashboard_client.connect();
+			System.out.println("Dashboard-Client communication established");
+			dashboard_client.subscribe(new String[] { "value/temperature", "value/light", "value/lightStatus",
+					"value/ph", "value/ec", "value/flow", "value/level", "warning/temperature", "warning/light",
+					"warning/ph", "warning/ec", "warning/flow", "warning/level", "warningtext/temperature",
+					"warningtext/light", "warningtext/ph", "warningtext/ec", "warningtext/flow", "warningtext/level" });
+
+			System.out.println("Dashboard-Client subscriptions completed");
+			dashboard_client.setCallback(new MqttCallback() {
+				@Override
+				public void messageArrived(String topic, MqttMessage message) throws Exception {
+					switch (topic.toUpperCase()) {
+					case "VALUE/TEMPERATURE":
+						temp = Double.parseDouble(message.toString());
+						break;
+					case "VALUE/LIGHT":
+						light = Double.parseDouble(message.toString());
+						break;
+					case "VALUE/LIGHTSTATUS":
+						lightStatus = Boolean.parseBoolean(message.toString());
+						break;
+					case "VALUE/PH":
+						ph = Double.parseDouble(message.toString());
+						break;
+					case "VALUE/EC":
+						// ec = (double)Double.parseDouble(message.toString());
+						break;
+					case "VALUE/FLOW":
+						flow = Double.parseDouble(message.toString());
+						break;
+					case "VALUE/LEVLE":
+						level = Double.parseDouble(message.toString());
+						break;
+
+					case "WARNING/TEMPERATURE":
+						temp_warning_bool = Boolean.parseBoolean(message.toString());
+						break;
+					case "WARNING/LIGHT":
+						light_warning_bool = Boolean.parseBoolean(message.toString());
+						break;
+					case "WARNING/PH":
+						ph_warning_bool = Boolean.parseBoolean(message.toString());
+						break;
+					case "WARNING/EC":
+						ec_warning_bool = Boolean.parseBoolean(message.toString());
+						break;
+					case "WARNING/FLOW":
+						flow_warning_bool = Boolean.parseBoolean(message.toString());
+						break;
+					case "WARNING/LEVEL":
+						level_warning_bool = Boolean.parseBoolean(message.toString());
+						break;
+
+					case "WARNINGTEXT/TEMPERATURE":
+						temp_warning_text = message.toString();
+						break;
+					case "WARNINGTEXT/LIGHT":
+						light_warning_text = message.toString();
+						break;
+					case "WARNINGTEXT/PH":
+						ph_warning_text = message.toString();
+						break;
+					case "WARNINGTEXT/EC":
+						ec_warning_text = message.toString();
+						break;
+					case "WARNINGTEXT/FLOW":
+						flow_warning_text = message.toString();
+						break;
+					case "WARNINGTEXT/LEVEL":
+						level_warning_text = message.toString();
+						break;
+					}
+					shitChanged = true;
+				}
+
+				@Override
+				public void connectionLost(Throwable cause) {
+
+				}
+
+				@Override
+				public void deliveryComplete(IMqttDeliveryToken token) {
+
+				}
+			});
+			System.out.println("Dashboard-Client callback set");
+		} catch (MqttException e) {
+			System.out.println("Dashboard-Client failed!");
+			e.printStackTrace();
+		}
+
 		// Initialisierung der Objekte
 		temp_btn = new Button();
 		temp_btn_layout = new TempButton();
@@ -104,8 +232,8 @@ public class Dashboard extends Scene {
 		button_layouts = new DashboardButton[] { temp_btn_layout, light_btn_layout, ph_btn_layout, ec_btn_layout,
 				flow_btn_layout, level_btn_layout };
 
-		warnings = new Warning[] { temp_warning, light_warning, ph_warning, ec_warning, level_warning, flow_warning };
-		
+		warnings = new Warning[] { temp_warning, light_warning, ph_warning, ec_warning, flow_warning, level_warning };
+
 		addObject(temp_btn);
 		addObject(light_btn);
 		addObject(ph_btn);
@@ -119,100 +247,19 @@ public class Dashboard extends Scene {
 		addObject(ec_warning);
 		addObject(level_warning);
 		addObject(flow_warning);
-		
+
 		updateShape();
-	}
-
-	// Setting values
-
-	public void calibrateTempBtn(double v_min, double v_optimal, double v_max, double v_tol) {
-		temp_btn_layout.setTemperatures(v_min, v_optimal, v_max, v_tol);
-	}
-
-	public void setTemp(double temp) {
-		temp_btn_layout.setTemperature(temp);
-	}
-
-	public void setLightStatus(boolean status) {
-		light_btn_layout.setStatus(status);
-	}
-
-	public void setLightValue(double value) {
-		light_btn_layout.setValue(value);
-	}
-
-	public void setPHValue(double value) {
-		ph_btn_layout.setValue(value);
-	}
-
-	public void setLevel(double value) {
-		level_btn_layout.setLevel(value);
-	}
-
-	public void setFlowValue(double value) {
-		flow_btn_layout.setValue(value);
-	}
-
-	// Warning Activation
-
-	public void setTempWarning(boolean status) {
-		temp_warning.setActive(status);
-	}
-
-	public void setLightWarning(boolean status) {
-		light_warning.setActive(status);
-	}
-
-	public void setPHWarning(boolean status) {
-		ph_warning.setActive(status);
-	}
-
-	public void setECWarning(boolean status) {
-		ec_warning.setActive(status);
-	}
-
-	public void setFlowWarning(boolean status) {
-		flow_warning.setActive(status);
-	}
-
-	public void setLevelWarning(boolean status) {
-		level_warning.setActive(status);
-	}
-
-	// Warning texts
-
-	public void setTempWarningText(String text) {
-		temp_warning.setText(text);
-	}
-
-	public void setLightWarningText(String text) {
-		light_warning.setText(text);
-	}
-
-	public void setPHWarningText(String text) {
-		ph_warning.setText(text);
-	}
-
-	public void setECWarningText(String text) {
-		ec_warning.setText(text);
-	}
-
-	public void setFlowWarningText(String text) {
-		flow_warning.setText(text);
-	}
-
-	public void setLevelWarningText(String text) {
-		level_warning.setText(text);
 	}
 
 	// ------ Scene activies
 
+	@Override
 	public void externalButton(int button) {
 		switch (button) {
 		case 0:
-			for (int x = 0; x < warnings.length; x++) {
-				if (warnings[x].getRealStatus() != 0) {
-					warnings[x].setStatus(false);
+			for (Warning warning : warnings) {
+				if (warning.getRealStatus() != 0) {
+					warning.setStatus(false);
 					break;
 				}
 			}
@@ -220,6 +267,7 @@ public class Dashboard extends Scene {
 		}
 	}
 
+	@Override
 	public void loadMode(int mode) {
 		full_sized = false;
 		button_selection = mode;
@@ -243,8 +291,7 @@ public class Dashboard extends Scene {
 			if (button_factor < 0)
 				button_factor = 0;
 		}
-
-		for (int x = 0; x < 6; x++) {
+		for (int x = 0; x < button_layouts.length; x++) {
 			if (button_selection == x) {
 				button_layouts[x]
 						.setShape(
@@ -265,32 +312,33 @@ public class Dashboard extends Scene {
 		}
 	}
 
+	@Override
 	public int mouseClick(double mousex, double mousey) { // 0: Temp, 1: Light, 2: PH, 3: EC, 4: Flow, 5: Level
 		int res = -1;
 
 		boolean warning_active = false;
-		for (int x = 0; x < warnings.length; x++)
-			if (warnings[x].getRealStatus() != 0) {
+		for (Warning warning : warnings)
+			if (warning.getRealStatus() != 0) {
 				warning_active = true;
 				break;
 			}
 
 		if (!warning_active) {
-			for (int x = 0; x < warnings.length; x++)
-				if (warnings[x].isPressed(mousex, mousey)) {
+			for (Warning warning : warnings)
+				if (warning.isPressed(mousex, mousey)) {
 
 				}
 		}
 
 		/*
-		 * if (selecting) { full_sized = false; selecting = true; for (int x = 0; x < 6;
-		 * x++) { if (buttons[x].isPressed(mousex, mousey)) { res = x;
-		 * buttons[x].design.toFront(); full_sized = true; selecting = false;
-		 * button_selection = x; break; } } }
+		 * if (selecting) { full_sized = false; selecting = true; for (int x = 0; x < 6; x++) { if
+		 * (buttons[x].isPressed(mousex, mousey)) { res = x; buttons[x].design.toFront(); full_sized = true;
+		 * selecting = false; button_selection = x; break; } } }
 		 */
 		return res;
 	}
 
+	@Override
 	public void updateSize() {
 		btn_width = (variables.width - (int) (variables.height * (1 - constants.height_perc)
 				* (2 * constants.edge_distance + 2 * constants.button_distance))) / 3;
@@ -418,8 +466,35 @@ public class Dashboard extends Scene {
 		flow_warning.setRectangle(warning_width_factor * variables.width);
 	}
 
+	@Override
 	public void update() {
 		updateShape();
 		super.update();
+
+		if (shitChanged) {
+			temp_btn_layout.setTemperature(temp);
+			light_btn_layout.setStatus(lightStatus);
+			light_btn_layout.setValue(light);
+			ph_btn_layout.setValue(ph);
+			// ec_btn_layout.setValue(ec);
+			flow_btn_layout.setValue(flow);
+			level_btn_layout.setLevel(level);
+
+			temp_warning.setActive(temp_warning_bool);
+			light_warning.setActive(light_warning_bool);
+			ph_warning.setActive(ph_warning_bool);
+			ec_warning.setActive(ec_warning_bool);
+			flow_warning.setActive(flow_warning_bool);
+			level_warning.setActive(level_warning_bool);
+
+			temp_warning.setText(temp_warning_text);
+			light_warning.setText(light_warning_text);
+			ph_warning.setText(ph_warning_text);
+			ec_warning.setText(ec_warning_text);
+			flow_warning.setText(flow_warning_text);
+			level_warning.setText(level_warning_text);
+
+			shitChanged = false;
+		}
 	}
 }

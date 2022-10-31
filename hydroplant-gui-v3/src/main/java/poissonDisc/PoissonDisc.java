@@ -20,13 +20,13 @@ public class PoissonDisc {
 	int sizex, sizey;
 
 	public PoissonDisc(int sizex, int sizey, double r) {
-		this.active = new ArrayList<Integer>();
-		this.half_active = new ArrayList<Integer>();
-		this.points = new ArrayList<Point>();
+		this.active = new ArrayList<>();
+		this.half_active = new ArrayList<>();
+		this.points = new ArrayList<>();
 		this.sizex = sizex;
 		this.sizey = sizey;
 		this.r = r;
-		this.w = r / (double) Math.sqrt(2);
+		this.w = r / Math.sqrt(2);
 
 		bb = null;
 
@@ -120,9 +120,9 @@ public class PoissonDisc {
 			}
 		}
 		if (!points_found) {
-			for (int x = 0; x < points.size(); x++) {
-				if (points.get(x).getPos() == active.get(i)) {
-					points.get(x).setMode(0);
+			for (Point point : points) {
+				if (point.getPos() == active.get(i)) {
+					point.setMode(0);
 					break;
 				}
 			}
@@ -160,10 +160,10 @@ public class PoissonDisc {
 			new_grid[x] = null;
 		}
 
-		active = new ArrayList<Integer>();
-		half_active = new ArrayList<Integer>();
+		active = new ArrayList<>();
+		half_active = new ArrayList<>();
 
-		ArrayList<Integer> remover = new ArrayList<Integer>();
+		ArrayList<Integer> remover = new ArrayList<>();
 
 		for (int x = 0; x < points.size(); x++) {
 			Vector new_pos = grid[points.get(x).getPos()];
@@ -206,7 +206,7 @@ public class PoissonDisc {
 	}
 
 	public ArrayList<ReturnPoint> getPoints() {
-		ArrayList<ReturnPoint> return_list = new ArrayList<ReturnPoint>();
+		ArrayList<ReturnPoint> return_list = new ArrayList<>();
 		for (int x = 0; x < points.size(); x++) {
 			return_list.add(new ReturnPoint(points.get(x), grid));
 		}

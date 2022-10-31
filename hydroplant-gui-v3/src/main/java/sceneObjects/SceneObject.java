@@ -46,13 +46,21 @@ public class SceneObject {
 		this.positiony = positiony;
 		updatePosition();
 	}
-	
+
 	public void setPos(int positioning) {
 		this.positioning = positioning;
 	}
-	
+
 	public double[] getPosition() {
 		return new double[] {this.positionx, this.positiony};
+	}
+
+	public void toFront() {
+		pane.toFront();
+	}
+
+	public void toBack() {
+		pane.toBack();
 	}
 
 	protected void updatePosition() { // Kinder der Klasse können in diese Funktion die Positionsänderung verarbeiten

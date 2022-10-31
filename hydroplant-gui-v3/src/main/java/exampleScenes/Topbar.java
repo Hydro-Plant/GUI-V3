@@ -2,9 +2,9 @@ package exampleScenes;
 
 import exampleLayouts.BackButton;
 import exampleSceneObjects.BatteryStatus;
-import gui.constants;
 import gui.Layout;
 import gui.Scene;
+import gui.constants;
 import gui.variables;
 import javafx.scene.paint.Color;
 import javafx2.Rectangle2;
@@ -42,6 +42,7 @@ public class Topbar extends Scene {
 		addObject(btn);
 	}
 
+	@Override
 	public void updateSize() {
 		int outline_size = (int) (variables.height * constants.height_outline);
 		bb.setStrokeWidth(outline_size);
@@ -65,6 +66,7 @@ public class Topbar extends Scene {
 		bs.setBatLevel(bat_perc);
 	}
 
+	@Override
 	public int mouseClick(double mousex, double mousey) {
 		if (btn.isPressed(mousex, mousey)) {
 			return 0;

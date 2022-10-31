@@ -24,7 +24,7 @@ public class LevelButton extends DashboardButton {
 	ImageView2 wave;
 	WritableImage wave_img;
 
-	int size_x, size_y;
+	double size_x, size_y;
 
 	Color backg = Color.rgb(232, 232, 232);
 
@@ -60,7 +60,7 @@ public class LevelButton extends DashboardButton {
 		updateWave();
 	}
 
-	public void setShape(int obj_width, int obj_height) {
+	public void setShape(double obj_width, double obj_height) {
 		size_x = obj_width;
 		size_y = obj_height;
 		wave_full_water.setX2(Positioning.positioning(positioning, 6)[0] * obj_width);
@@ -87,10 +87,10 @@ public class LevelButton extends DashboardButton {
 	public void update() {
 		beta = (beta + 1 / variables.frameRate * speed * (2 * Math.PI)) % (2 * Math.PI);
 
-		wave_img = new WritableImage(size_x, (int) (wave_height * variables.height));
+		wave_img = new WritableImage((int) Math.floor(size_x), (int) (wave_height * variables.height));
 		PixelWriter wave_pw = wave_img.getPixelWriter();
 		// boolean all_painted = false;
-		for (int x = 0; x < size_x; x++) {
+		for (int x = 0; x < (int) Math.floor(size_x); x++) {
 			for (int y = 0; y < (int) (wave_height * variables.height); y++) {
 				if (y >= (int) (wave_height * variables.height / 2)
 						+ Math.sin(beta + x * (2 * Math.PI) / (wave_width * variables.height)) * wave_height

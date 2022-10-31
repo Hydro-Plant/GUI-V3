@@ -24,7 +24,7 @@ public class Layout {
 		positioning = pos;
 		updatePosition();
 	}
-	
+
 	public void addObject(Node new_object) {
 		pane.getChildren().add(new_object);
 	}
@@ -40,7 +40,7 @@ public class Layout {
 	protected void updatePosition() { // Kinder der Klasse können in diese Funktion die Positionsänderung verarbeiten
 
 	}
-	
+
 	public void toFront() {
 		for (int x = 0; x < pane.getChildren().size(); x++) {
 			pane.toFront();

@@ -6,14 +6,13 @@ import gui.variables;
 import javafx.geometry.VPos;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.StrokeType;
 import javafx.scene.text.TextAlignment;
 import javafx2.ImageView2;
 import javafx2.Rectangle2;
 import javafx2.Text2;
-import standard.Vector;
 import standard.Alpha;
 import standard.Bezier;
+import standard.Vector;
 
 public class WarningLayout extends Layout {
 	ImageView2 wrn_sign;
@@ -160,6 +159,7 @@ public class WarningLayout extends Layout {
 		}
 	}
 
+	@Override
 	public void update() {
 		if (alpha_change) {
 			if (alpha_status) {

@@ -6,7 +6,7 @@ import standard.Positioning;
 public class Button extends SceneObject {
 	double button_height, button_width;
 	public Layout design;
-	
+
 	public Button() {
 		this.button_height = 0;
 		this.button_width = 0;
@@ -36,17 +36,15 @@ public class Button extends SceneObject {
 		return false;
 	}
 
+	@Override
 	protected void updatePosition() {
 		if (design != null)
 			design.setLayoutPosition(positionx, positiony);
 	}
 
+	@Override
 	public void update() {
 		if (design != null)
 			design.update();
-	}
-	
-	public void toFront() {
-		design.toFront();
 	}
 }

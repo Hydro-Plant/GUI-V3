@@ -11,10 +11,10 @@ public class SceneHandler {
 		int event = active_scene.scene.sceneEvents();
 		boolean res = false;
 		if (event != -1) {
-			for (int x = 0; x < active_scene.deps.size(); x++) {
-				if (active_scene.deps.get(x).trigger == event) {
-					int new_mode = active_scene.deps.get(x).loading_mode;
-					active_scene = active_scene.deps.get(x).new_scene;
+			for (SceneDependency element : active_scene.deps) {
+				if (element.trigger == event) {
+					int new_mode = element.loading_mode;
+					active_scene = element.new_scene;
 					active_scene.scene.loadMode(new_mode);
 					active_scene.scene.updateSize();
 					res = true;
@@ -36,5 +36,21 @@ public class SceneHandler {
 
 	public void mouseClick(double mousex, double mousey) {
 		active_scene.scene.mouseClick(mousex, mousey);
+	}
+
+	public void mousePressed(double mousex, double mousey) {
+		active_scene.scene.mousePressed(mousex, mousey);
+	}
+
+	public void mouseReleased(double mousex, double mousey) {
+		active_scene.scene.mouseReleased(mousex, mousey);
+	}
+
+	public void mouseDragged(double mousex, double mousey) {
+		active_scene.scene.mouseDragged(mousex, mousey);
+	}
+
+	public void mouseMoved(double mousex, double mousey) {
+		active_scene.scene.mouseMoved(mousex, mousey);
 	}
 }

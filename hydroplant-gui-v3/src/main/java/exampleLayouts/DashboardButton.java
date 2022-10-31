@@ -83,40 +83,40 @@ public class DashboardButton extends Layout {
 		bg_rec.setStrokeWidth(d);
 	}
 
-	public void setVirtualShape(int obj_width, int obj_height, int positioning) {
+	public void setVirtualShape(double btn_width, double btn_height, int positioning) {
 		this.positioning = positioning;
 		bg_rec.setPos(positioning);
-		bg_rec.setArcHeight(constants.corner_height_val * obj_height);
-		bg_rec.setArcWidth(constants.corner_height_val * obj_height);
+		bg_rec.setArcHeight(constants.corner_height_val * btn_height);
+		bg_rec.setArcWidth(constants.corner_height_val * btn_height);
 
-		mask.setArcHeight((int) (constants.corner_height_val * obj_height));
-		mask.setArcWidth((int) (constants.corner_height_val * obj_height));
+		mask.setArcHeight((int) (constants.corner_height_val * btn_height));
+		mask.setArcWidth((int) (constants.corner_height_val * btn_height));
 		mask.setPos(positioning);
 
 		double[] pos_shift = Positioning.positioning(positioning, 4);
 
-		title.setX2((int) (pos_shift[0] * obj_width - obj_width / 2
-				+ constants.titlepos_height_val_x * constants.corner_height_val * obj_height));
-		title.setY2((int) (pos_shift[1] * obj_height - obj_height / 2
-				+ constants.titlepos_height_val_y * constants.corner_height_val * obj_height));
-		title.setSize(constants.title_height_val * obj_height);
+		title.setX2((int) (pos_shift[0] * btn_width - btn_width / 2
+				+ constants.titlepos_height_val_x * constants.corner_height_val * btn_height));
+		title.setY2((int) (pos_shift[1] * btn_height - btn_height / 2
+				+ constants.titlepos_height_val_y * constants.corner_height_val * btn_height));
+		title.setSize(constants.title_height_val * btn_height);
 
-		information.setX2((int) Math.floor(pos_shift[0] * obj_width));
-		information.setY2((int) Math.floor(pos_shift[1] * obj_height));
-		information.setSize(constants.information_height_val * obj_height);
+		information.setX2((int) Math.floor(pos_shift[0] * btn_width));
+		information.setY2((int) Math.floor(pos_shift[1] * btn_height));
+		information.setSize(constants.information_height_val * btn_height);
 
-		unit.setX2((int) (pos_shift[0] * obj_width + obj_width / 2
-				- constants.titlepos_height_val_x * constants.corner_height_val * obj_height));
-		unit.setY2((int) (pos_shift[1] * obj_height + obj_height / 2
-				- constants.titlepos_height_val_y * constants.corner_height_val * obj_height));
-		unit.setSize((int) (constants.title_height_val * obj_height));
+		unit.setX2((int) (pos_shift[0] * btn_width + btn_width / 2
+				- constants.titlepos_height_val_x * constants.corner_height_val * btn_height));
+		unit.setY2((int) (pos_shift[1] * btn_height + btn_height / 2
+				- constants.titlepos_height_val_y * constants.corner_height_val * btn_height));
+		unit.setSize((int) (constants.title_height_val * btn_height));
 
 	}
 
-	public void setShape(int obj_width, int obj_height) {
-		bg_rec.setWidth2(obj_width);
-		bg_rec.setHeight2(obj_height);
-		mask.setWidth2(obj_width);
-		mask.setHeight2(obj_height);
+	public void setShape(double btn_width, double btn_height) {
+		bg_rec.setWidth2(btn_width);
+		bg_rec.setHeight2(btn_height);
+		mask.setWidth2(btn_width);
+		mask.setHeight2(btn_height);
 	}
 }

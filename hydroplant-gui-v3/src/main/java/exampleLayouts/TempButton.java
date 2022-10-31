@@ -7,10 +7,10 @@ public class TempButton extends DashboardButton {
 	Color c_max = Color.rgb(255, 50, 50);
 	Color c_min = Color.rgb(50, 50, 255);
 
-	double v_optimal;
-	double v_tol;
-	double v_max;
-	double v_min;
+	double v_optimal = 21;
+	double v_tol = 2;
+	double v_max = 25;
+	double v_min = 17;
 
 	double value;
 

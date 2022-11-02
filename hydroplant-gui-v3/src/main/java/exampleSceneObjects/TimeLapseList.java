@@ -25,7 +25,7 @@ public class TimeLapseList extends MiniScene {
 	public TimeLapseList() {
 		scene = new MiniScene();
 		clip = new Rectangle2();
-		tl = new ArrayList<TimeLapse>();
+		tl = new ArrayList<>();
 		scene.getPane().setClip(clip);
 
 		this.addObject(scene);

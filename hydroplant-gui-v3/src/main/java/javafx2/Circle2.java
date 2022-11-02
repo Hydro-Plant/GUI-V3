@@ -22,9 +22,17 @@ public class Circle2 extends Circle {
 		updateCir();
 	}
 
+	public double getX2() {
+		return posx;
+	}
+
 	public void setY2(double y) {
 		posy = y;
 		updateCir();
+	}
+
+	public double getY2() {
+		return posy;
 	}
 
 	public void setRadius2(double radius) {

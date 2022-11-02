@@ -20,6 +20,10 @@ public class Button extends SceneObject {
 		this.button_width = width;
 	}
 
+	public Layout getDesign() {
+		return design;
+	}
+
 	public void setDesign(Layout design) {
 		this.design = design;
 		pane = this.design.getPane();

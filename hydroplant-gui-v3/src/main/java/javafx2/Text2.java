@@ -49,8 +49,20 @@ public class Text2 extends Text {
 		updateText();
 	}
 
+	public double getX2() {
+		return posx;
+	}
+
 	public void setY2(double y) {
 		super.setY(y);
+	}
+
+	public double getY2() {
+		return super.getY();
+	}
+
+	public double getWidth() {
+		return super.getBoundsInLocal().getWidth();
 	}
 
 	public void setHorizontalOrientation(TextAlignment tl) {

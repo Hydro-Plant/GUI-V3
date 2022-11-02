@@ -7,6 +7,7 @@ import exampleScenes.Dashboard;
 import exampleScenes.LightScene;
 import exampleScenes.TempScene;
 import exampleScenes.TestScene;
+import exampleScenes.TimeLapseScene;
 import exampleScenes.Topbar;
 import gui.SceneBundle;
 import gui.SceneHandler;
@@ -30,6 +31,7 @@ public class App extends Application {
 	boolean drag = false;
 
 	TestScene tests;
+	TimeLapseScene tls;
 	Topbar tb;
 	Dashboard db;
 	TempScene ts;
@@ -51,6 +53,9 @@ public class App extends Application {
 
 		tests = new TestScene();
 		SceneBundle tests_sb = new SceneBundle(tests);
+
+		tls = new TimeLapseScene();
+		SceneBundle tls_sb = new SceneBundle(tls);
 
 		db = new Dashboard();
 		SceneBundle db_sb = new SceneBundle(db);
@@ -78,7 +83,6 @@ public class App extends Application {
 		sh = new SceneHandler();
 		sh.setScene(tests_sb);
 		root.getChildren().add(sh.getActive().root);
-
 		root.getChildren().add(tb.root);
 
 		Scene scene = new Scene(root, 1366, 768); // Sets up scene

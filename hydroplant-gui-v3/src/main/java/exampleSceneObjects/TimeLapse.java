@@ -155,7 +155,7 @@ public class TimeLapse extends MiniScene {
 		this.setSpeed(tld.speed);
 		this.setPictures(tld.pictures);
 		this.setMode(tld.mode);
-		
+
 		this.id = tld.id;
 	}
 
@@ -228,7 +228,7 @@ public class TimeLapse extends MiniScene {
 	public double getDragWidth() {
 		return width - rl.getWidth() - height * (1 - mode_factor);
 	}
-	
+
 	public int getId() {
 		return id;
 	}

@@ -39,6 +39,14 @@ public class Vector {
 		return new Vector(Math.cos(angle), Math.sin(angle));
 	}
 
+	public double getAngle() {
+		return Math.atan2(y, x);
+	}
+
+	public double getMag() {
+		return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+	}
+
 	@Override
 	public String toString() {
 		return ("{ " + x + "; " + y + " }");

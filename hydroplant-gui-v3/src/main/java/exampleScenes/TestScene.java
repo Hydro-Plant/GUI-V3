@@ -1,147 +1,76 @@
 package exampleScenes;
 
-import java.util.ArrayList;
-
-import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.MqttCallback;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-
-import exampleSceneObjects.TimeLapse;
-import exampleSceneObjects.TimeLapseList;
+import exampleSceneObjects.NewTimeLapseScroll;
+import gui.Layout;
 import gui.Scene;
 import gui.constants;
 import gui.variables;
+import javafx.scene.paint.Color;
 import javafx2.Rectangle2;
-import sceneObjects.MiniScene;
-import timelapse.TimeLapseData;
+import sceneObjects.FlatLayout;
 
 public class TestScene extends Scene {
-	final double scroll_factor = 0.9;
+	NewTimeLapseScroll ntls;
 
-	TimeLapseList tll;
-
-	Rectangle2 scroll_clip;
-	MiniScene scroll;
-
-	MqttClient timelapse_client;
-	MemoryPersistence pers;
-
-	ArrayList<TimeLapse> data_tl;
-	boolean newData = false;
+	Rectangle2 bg_rec;
+	Rectangle2 second_rec;
+	Layout l_rec;
+	FlatLayout fl_rec;
 
 	public TestScene() {
+		bg_rec = new Rectangle2();
+		bg_rec.setWidth2(2000);
+		bg_rec.setHeight2(2000);
+		bg_rec.setFill(Color.rgb(69, 69, 69));
+		l_rec = new Layout();
+		l_rec.addObject(bg_rec);
+		fl_rec = new FlatLayout();
+		fl_rec.setDesign(l_rec);
+		addObject(fl_rec);
 
-		// Mqtt Startup
+		second_rec = new Rectangle2();
+		second_rec.setFill(Color.TRANSPARENT);
+		second_rec.setStroke(Color.RED);
+		second_rec.setStrokeWidth(10);
 
-		pers = new MemoryPersistence();
+		second_rec.setX2(50);
+		second_rec.setY2(100);
+		second_rec.setWidth2(1200);
+		second_rec.setHeight2(600);
+		l_rec.addObject(second_rec);
 
-		try {
-			timelapse_client = new MqttClient("tcp://localhost:1883", "timelapse", pers);
-			timelapse_client.connect();
-			System.out.println("Timelapse-Client communication established");
-			timelapse_client.subscribe(new String[] { "timelapse/data" });
-
-			System.out.println("Timelapse-Client subscriptions completed");
-			timelapse_client.setCallback(new MqttCallback() {
-				@Override
-				public void messageArrived(String topic, MqttMessage message) throws Exception {
-					switch (topic.toUpperCase()) {
-					case "TIMELAPSE/DATA":
-						Gson gson = new GsonBuilder().setPrettyPrinting().create();
-						ArrayList<TimeLapseData> data = gson.fromJson(message.toString(),
-								new TypeToken<ArrayList<TimeLapseData>>() {
-								}.getType());
-						data_tl = new ArrayList<>();
-
-						for (int x = 0; x < data.size(); x++) {
-							data_tl.add(TimeLapse.fromData(data.get(x)));
-						}
-
-						newData = true;
-
-						break;
-					}
-				}
-
-				@Override
-				public void connectionLost(Throwable cause) {
-
-				}
-
-				@Override
-				public void deliveryComplete(IMqttDeliveryToken token) {
-
-				}
-			});
-			System.out.println("Timelapse-Client callback set");
-		} catch (MqttException e) {
-			System.out.println("Timelapse-Client failed!");
-			e.printStackTrace();
-		}
-		
-		scroll = new MiniScene();
-		scroll.setPosition(scroll_factor, scroll_factor);
-
-		tll = new TimeLapseList();
-		tll.setPosition(20, 80);
-		tll.setShape(1300, 650);
-		tll.setTLHeight(300);
-		
-		try {
-			timelapse_client.publish("timelapse/get", new MqttMessage("true".getBytes()));
-		} catch (MqttException e) {
-			System.out.println("Could not get timelapse");
-			e.printStackTrace();
-		}
-		
-		addObject(tll);
+		ntls = new NewTimeLapseScroll();
+		ntls.setPosition(50, 100);
+		ntls.setShape(1200, 600);
+		ntls.setOutline(variables.height * constants.height_outline);
+		addObject(ntls);
 	}
 
+
+
+	@Override
 	public void update() {
-		if (newData) {
-			newData = false;
-			tll.setTimeLapse(data_tl);
-		}
-		super.update();
+		ntls.update();
 	}
-	
+
+	@Override
 	public int mouseClick(double mousex, double mousey) {
-		int pressed = tll.mouseClicked(mousex, mousey);
-		if(pressed != -1) {
-			try {
-				timelapse_client.publish("timelapse/delete", new MqttMessage(Integer.toString(pressed).getBytes()));
-			} catch (MqttException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		ntls.mouseClick(mousex, mousey);
 		return -1;
 	}
-	
+
 	@Override
 	public void mousePressed(double mousex, double mousey) {
-		tll.mousePressed(mousex, mousey);
+		ntls.mousePressed(mousex, mousey);
 	}
 
 	@Override
 	public void mouseReleased(double mousex, double mousey) {
-		tll.mouseReleased(mousex, mousey);
+		ntls.mouseReleased(mousex, mousey);
 	}
 
 	@Override
 	public void mouseDragged(double mousex, double mousey) {
-		tll.mouseDragged(mousex, mousey);
-	}
-
-	@Override
-	public void updateSize() {
-		tll.setOutline(variables.height * constants.height_outline);
+		ntls.mouseDragged(mousex, mousey);
 	}
 }

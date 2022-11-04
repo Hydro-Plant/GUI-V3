@@ -81,7 +81,7 @@ public class App extends Application {
 		// Init scene handler
 
 		sh = new SceneHandler();
-		sh.setScene(tests_sb);
+		sh.setScene(tls_sb);
 		root.getChildren().add(sh.getActive().root);
 		root.getChildren().add(tb.root);
 
@@ -92,9 +92,7 @@ public class App extends Application {
 			@Override
 			public void handle(MouseEvent event) {
 				sh.mousePressed(event.getSceneX(), event.getSceneY());
-
 			}
-
 		});
 
 		scene.setOnMouseReleased(new EventHandler<MouseEvent>() {

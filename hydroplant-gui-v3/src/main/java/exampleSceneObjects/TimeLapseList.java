@@ -102,6 +102,10 @@ public class TimeLapseList extends MiniScene {
 		reload();
 	}
 
+	public double[] getShape() {
+		return new double[] {width, height};
+	}
+	
 	private void reload() {
 		for (int x = 0; x < tl.size(); x++) {
 			this.tl.get(x).setShape(width, tl_height);

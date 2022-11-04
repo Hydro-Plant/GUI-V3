@@ -169,6 +169,7 @@ public class DatePicker extends MiniScene {
 
 	public void reload() {
 		date = LocalDate.now(ZoneId.of("+1"));
+		updateDate();
 	}
 
 	private void updateDate() {

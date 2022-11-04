@@ -13,18 +13,43 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import exampleSceneObjects.NewTimeLapse;
 import exampleSceneObjects.TimeLapse;
 import exampleSceneObjects.TimeLapseList;
 import gui.Scene;
 import gui.constants;
 import gui.variables;
+import javafx.scene.effect.ColorAdjust;
 import javafx2.Rectangle2;
 import sceneObjects.MiniScene;
+import standard.Bezier;
+import standard.Map;
+import standard.Vector;
 import timelapse.TimeLapseData;
 
 public class TimeLapseScene extends Scene {
-	final double scroll_factor = 0.9;
+	private final double scroll_factor = 0.9;
+	private final double ntl_width = 0.9;
+	private final double ntl_height = 0.9;
+	private final double speed = 1;
+	private final double bez_factor = 0.3;
+	private final double extra_top_factor = 0.0;
+	
+	private final double tll_width = 0.95;
+	private final double tll_height = 0.95;
+	private final double tll_height_factor = 0.4;
+	private final double tll_gap_factor = 0.02;
 
+	NewTimeLapse ntl;
+
+	double ntl_first_posy;
+	double ntl_second_posy;
+
+	double ntl_factor = 0;
+	boolean ntl_mode = false;
+	boolean moving = false;
+
+	ColorAdjust ca;
 	TimeLapseList tll;
 
 	Rectangle2 scroll_clip;
@@ -89,10 +114,11 @@ public class TimeLapseScene extends Scene {
 		scroll = new MiniScene();
 		scroll.setPosition(scroll_factor, scroll_factor);
 
+		ca = new ColorAdjust();
+		
 		tll = new TimeLapseList();
-		tll.setPos(2);
-		tll.setShape(1300, 650);
-		tll.setTLHeight(300);
+		tll.setPos(0);
+		tll.getPane().setEffect(ca);
 
 		try {
 			timelapse_client.publish("timelapse/get", new MqttMessage("true".getBytes()));
@@ -101,7 +127,12 @@ public class TimeLapseScene extends Scene {
 			e.printStackTrace();
 		}
 
+		ntl = new NewTimeLapse();
+		ntl.setPos(1);
+		ntl.setMode(true);
+
 		addObject(tll);
+		addObject(ntl);
 	}
 
 	@Override
@@ -111,39 +142,117 @@ public class TimeLapseScene extends Scene {
 			tll.setTimeLapse(data_tl);
 		}
 		super.update();
+
+		ntl.update();
+		if (moving) {
+			if (ntl_mode) {
+				ntl_factor += speed / variables.frameRate;
+				if (ntl_factor >= 1) {
+					ntl.setActive(true);
+					ntl_factor = 1;
+					moving = false;
+				}
+			} else {
+				ntl_factor -= speed / variables.frameRate;
+				if (ntl_factor <= 0) {
+					ntl.reload();
+					ntl_factor = 0;
+					moving = false;
+				}
+			}
+			ca.setBrightness(ntl_factor * 0.7);
+			double bez = Map.map(
+					Bezier.bezier_curve_2d(ntl_factor, new Vector(bez_factor, 0), new Vector(1 - bez_factor, 1)).y, 0,
+					1, this.ntl_first_posy, this.ntl_second_posy);
+			ntl.setPosition(ntl.getPosition()[0], bez);
+		}
 	}
 
 	@Override
 	public int mouseClick(double mousex, double mousey) {
-		int pressed = tll.mouseClicked(mousex, mousey);
-		if (pressed != -1) {
+		switch (ntl.mouseClick(mousex, mousey)) {
+		case 0:
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			String new_tl = gson.toJson(ntl.getTimeLapse());
 			try {
-				timelapse_client.publish("timelapse/delete", new MqttMessage(Integer.toString(pressed).getBytes()));
-			} catch (MqttException e) {
-				e.printStackTrace();
+				timelapse_client.publish("timelapse/add", new MqttMessage(new_tl.getBytes()));
+			} catch (MqttException e1) {
+				e1.printStackTrace();
+			}
+		case 1:
+			ntl.setActive(false);
+			ntl.setMode(ntl_mode);
+			ntl_mode = !ntl_mode;
+			moving = true;
+			break;
+		}
+		
+		if (!ntl_mode) {
+			int pressed = tll.mouseClicked(mousex, mousey);
+			if (pressed != -1) {
+				try {
+					timelapse_client.publish("timelapse/delete", new MqttMessage(Integer.toString(pressed).getBytes()));
+				} catch (MqttException e) {
+					e.printStackTrace();
+				}
 			}
 		}
+
 		return -1;
 	}
 
 	@Override
 	public void mousePressed(double mousex, double mousey) {
-		tll.mousePressed(mousex, mousey);
+		if (!ntl_mode) tll.mousePressed(mousex, mousey);
+		ntl.mousePressed(mousex, mousey);
 	}
 
 	@Override
 	public void mouseReleased(double mousex, double mousey) {
-		tll.mouseReleased(mousex, mousey);
+		if (!ntl_mode) tll.mouseReleased(mousex, mousey);
+		ntl.mouseReleased(mousex, mousey);
 	}
 
 	@Override
 	public void mouseDragged(double mousex, double mousey) {
-		tll.mouseDragged(mousex, mousey);
+		if (!ntl_mode) tll.mouseDragged(mousex, mousey);
+		ntl.mouseDragged(mousex, mousey);
 	}
 
+	public void externalButton(int btn) {
+		switch(btn) {
+		case 0:
+			if(ntl_mode == true) {
+				ntl.setActive(false);
+				ntl.setMode(ntl_mode);
+				ntl_mode = !ntl_mode;
+				moving = true;
+			}else {
+				
+			}
+			break;
+		}
+	}
+	
 	@Override
 	public void updateSize() {
-		tll.setPosition((variables.width - 1300) / 2, 80);
+		tll.setShape(tll_width * variables.width, tll_height * (variables.height * (1 - constants.height_perc) * (1 - extra_top_factor)));
+		double top = variables.height * (constants.height_perc + extra_top_factor);
+		tll.setPosition(variables.width / 2 - (tll_width * variables.width) / 2, top + (variables.height - top - tll.getShape()[1]) / 2);
 		tll.setOutline(variables.height * constants.height_outline);
+		tll.setTLGap(variables.height * tll_gap_factor);
+		tll.setTLHeight(variables.height * tll_height_factor);
+
+		ntl.setOutline(variables.height * constants.height_outline);
+		ntl.setShape(variables.width * ntl_width, variables.height * (1 - constants.height_perc) * ntl_height);
+		ntl_first_posy = variables.height * constants.height_perc - ntl.getRealHeight()
+				- variables.height * constants.height_outline;
+		ntl_second_posy = variables.height * constants.height_perc + (variables.height * (1 - constants.height_perc)
+				- variables.height * (1 - constants.height_perc) * ntl_height) / 2;
+
+		double bez = Map.map(
+				Bezier.bezier_curve_2d(ntl_factor, new Vector(bez_factor, 0), new Vector(1 - bez_factor, 1)).y, 0, 1,
+				this.ntl_first_posy, this.ntl_second_posy);
+		ntl.setPosition(variables.width / 2, bez);
 	}
 }

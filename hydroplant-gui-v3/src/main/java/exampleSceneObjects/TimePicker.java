@@ -166,6 +166,7 @@ public class TimePicker extends MiniScene {
 
 	public void reload() {
 		time = LocalTime.now(ZoneId.of("+1"));
+		hour_selection = true;
 		if ((int) (Math.ceil(time.getMinute() * 0.2) / 0.2) < 60) {
 			time = LocalTime.of(time.getHour(), (int) (Math.ceil(time.getMinute() * 0.2) / 0.2));
 		} else {
@@ -339,8 +340,5 @@ public class TimePicker extends MiniScene {
 
 	@Override
 	public void update() {
-		// if(changing) {
-
-		// }
 	}
 }

@@ -5,6 +5,7 @@ import java.util.TimerTask;
 
 import exampleScenes.Dashboard;
 import exampleScenes.LightScene;
+import exampleScenes.StartScene;
 import exampleScenes.TempScene;
 import exampleScenes.TestScene;
 import exampleScenes.TimeLapseScene;
@@ -31,6 +32,7 @@ public class App extends Application {
 	boolean drag = false;
 
 	TestScene tests;
+	StartScene ss;
 	TimeLapseScene tls;
 	Topbar tb;
 	Dashboard db;
@@ -54,34 +56,30 @@ public class App extends Application {
 		tests = new TestScene();
 		SceneBundle tests_sb = new SceneBundle(tests);
 
+		ss = new StartScene();
+		SceneBundle ss_sb = new SceneBundle(ss);
+		
 		tls = new TimeLapseScene();
 		SceneBundle tls_sb = new SceneBundle(tls);
 
 		db = new Dashboard();
 		SceneBundle db_sb = new SceneBundle(db);
 
-		ts = new TempScene();
-		ts.setTemp(0);
-		SceneBundle ts_sb = new SceneBundle(ts);
-
-		ls = new LightScene();
-		ls.setLightStatus(false);
-		SceneBundle ls_sb = new SceneBundle(ls);
-
 		tb = new Topbar();
+		tb.setBackButton(false);
 		tb.setBat(56);
 
 		// Scene dependencies
 
-		db_sb.addDep(0, ts_sb, 0);
-		db_sb.addDep(1, ls_sb, 0);
-		ts_sb.addDep(0, db_sb, 0);
-		ls_sb.addDep(0, db_sb, 1);
-
+		ss_sb.addDep(0, db_sb, 0);
+		ss_sb.addDep(1, tls_sb, 0);
+		db_sb.addDep(0, ss_sb, 0);
+		tls_sb.addDep(0, ss_sb, 0);
+		
 		// Init scene handler
 
 		sh = new SceneHandler();
-		sh.setScene(tls_sb);
+		sh.setScene(ss_sb);
 		root.getChildren().add(sh.getActive().root);
 		root.getChildren().add(tb.root);
 
@@ -189,6 +187,8 @@ public class App extends Application {
 				tb.update();
 				if (sh.handle()) {
 					System.out.println("A switchd ja scene madafaka");
+					if(sh.getActive().equals(ss)) tb.setBackButton(false);
+					else tb.setBackButton(true);
 					root.getChildren().set(0, sh.getActive().root);
 				}
 				last = now;

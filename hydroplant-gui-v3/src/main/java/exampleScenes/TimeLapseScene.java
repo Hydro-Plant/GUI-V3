@@ -39,6 +39,12 @@ public class TimeLapseScene extends Scene {
 	private final double tll_height = 0.95;
 	private final double tll_height_factor = 0.4;
 	private final double tll_gap_factor = 0.02;
+	
+	final double scene_speed = 2;
+	final double scene_bez_factor = 0.3;
+	double scene_factor = 1;
+	boolean scene_active = true;
+	boolean scene_change = false;
 
 	NewTimeLapse ntl;
 
@@ -166,6 +172,25 @@ public class TimeLapseScene extends Scene {
 					1, this.ntl_first_posy, this.ntl_second_posy);
 			ntl.setPosition(ntl.getPosition()[0], bez);
 		}
+		
+		if(scene_change) {
+			if(scene_active) {
+				scene_factor += scene_speed / variables.frameRate;
+				if(scene_factor >= 1) {
+					scene_factor = 1;
+					scene_change = false;
+				}
+			}else {
+				scene_factor -= scene_speed / variables.frameRate;
+				if(scene_factor <= 0) {
+					scene_factor = 0;
+					scene_change = false;
+					this.scene_event = 0;
+				}
+			}
+			double scene_bez = Bezier.bezier_curve_2d(scene_factor, new Vector(scene_bez_factor, 0), new Vector(1 - scene_bez_factor, 1)).y;
+			this.root.setOpacity(scene_bez);
+		}
 	}
 
 	@Override
@@ -228,8 +253,23 @@ public class TimeLapseScene extends Scene {
 				ntl_mode = !ntl_mode;
 				moving = true;
 			}else {
-				
+				scene_active = false;
+				scene_change = true;
 			}
+			break;
+		}
+	}
+	
+	@Override
+	public void loadMode(int mode) {
+		switch(mode) {
+		case 0:
+			ntl_factor = 0;
+			ntl_mode = false;
+			
+			scene_factor = 0;
+			scene_active = true;
+			scene_change = true;
 			break;
 		}
 	}

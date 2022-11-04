@@ -19,11 +19,7 @@ public class DashboardButton extends Layout {
 	Text2 unit;
 	Pane additional_background;
 
-	// rectangle mask;
-	// PGraphics mask_g;
-
-	// picture front;
-	// PGraphics front_img;
+	double virt_sizex, virt_sizey;
 
 	DashboardButton() {
 		mask = new Rectangle2();
@@ -84,6 +80,8 @@ public class DashboardButton extends Layout {
 	}
 
 	public void setVirtualShape(double btn_width, double btn_height, int positioning) {
+		this.virt_sizex = btn_width;
+		this.virt_sizey = btn_height;
 		this.positioning = positioning;
 		bg_rec.setPos(positioning);
 		bg_rec.setArcHeight(constants.corner_height_val * btn_height);

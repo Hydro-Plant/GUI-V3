@@ -12,6 +12,8 @@ import sceneObjects.Button;
 import sceneObjects.FlatLayout;
 
 public class Topbar extends Scene {
+	private final double outl_factor = 1;
+	
 	BatteryStatus bs;
 	Button btn;
 	FlatLayout fl;
@@ -20,6 +22,7 @@ public class Topbar extends Scene {
 	BackButton bb;
 
 	Rectangle2 backg_rec;
+	Rectangle2 backg_rec2;
 
 	public Topbar() {
 		super();
@@ -33,6 +36,12 @@ public class Topbar extends Scene {
 		backg_rec.setY2(0);
 		backg_rec.setPos(0);
 		backg_rec.setFill(Color.rgb(51, 153, 255));
+		backg_rec2 = new Rectangle2();
+		backg_rec2.setX2(0);
+		backg_rec2.setY2(0);
+		backg_rec2.setPos(0);
+		backg_rec2.setFill(constants.outline_col);
+		fl_lt.addObject(backg_rec2);
 		fl_lt.addObject(backg_rec);
 		btn.setDesign(bb);
 		fl.setDesign(fl_lt);
@@ -44,12 +53,18 @@ public class Topbar extends Scene {
 
 	@Override
 	public void updateSize() {
-		int outline_size = (int) (variables.height * constants.height_outline);
+		double outline_size = variables.height * constants.height_outline;
 		bb.setStrokeWidth(outline_size);
+		
+		backg_rec2.setStroke(Color.BLACK);
+		backg_rec2.setStrokeWidth(outline_size);
+		backg_rec2.setWidth2(variables.width);
+		backg_rec2.setHeight2(variables.height * constants.height_perc + outl_factor * outline_size);
+		
 		backg_rec.setStroke(Color.BLACK);
 		backg_rec.setStrokeWidth(outline_size);
 		backg_rec.setWidth2(variables.width);
-		backg_rec.setHeight2((int) (variables.height * constants.height_perc));
+		backg_rec.setHeight2(variables.height * constants.height_perc);
 		bb.setSize((int) (variables.height * constants.height_perc * constants.button_topbar_perc) / 2);
 		btn.setShape((int) (variables.height * constants.height_perc * constants.button_topbar_perc),
 				(int) (variables.height * constants.height_perc * constants.button_topbar_perc));
@@ -64,6 +79,11 @@ public class Topbar extends Scene {
 
 	public void setBat(int bat_perc) {
 		bs.setBatLevel(bat_perc);
+	}
+	
+	public void setBackButton(boolean back_button) {
+		if(back_button) bb.getPane().setOpacity(1);
+		else  bb.getPane().setOpacity(0);
 	}
 
 	@Override

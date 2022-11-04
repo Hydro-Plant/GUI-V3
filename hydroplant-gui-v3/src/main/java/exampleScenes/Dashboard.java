@@ -28,6 +28,12 @@ public class Dashboard extends Scene {
 	final double warning_width_factor = 0.9;
 	final double warning_size_factor = 0.0003;
 	final double warning_pos_factor = 0.07;
+	
+	final double scene_speed = 2;
+	final double scene_bez_factor = 0.3;
+	double scene_factor = 1;
+	boolean scene_active = true;
+	boolean scene_change = false;
 
 	Button temp_btn; // Temperatur Button
 	TempButton temp_btn_layout;
@@ -260,21 +266,43 @@ public class Dashboard extends Scene {
 			for (Warning warning : warnings) {
 				if (warning.getRealStatus() != 0) {
 					warning.setStatus(false);
-					break;
+					return;
 				}
 			}
+			scene_active = false;
+			scene_change = true;
 			break;
 		}
 	}
+	
+	/*
+	final double scene_factor = 1;
+	final boolean scene_active = true;
+	 */
 
 	@Override
 	public void loadMode(int mode) {
-		full_sized = false;
-		button_selection = mode;
-		button_factor = 1;
-		selecting = true;
+		switch(mode) {
+		case 0:
+			scene_factor = 0;
+			scene_active = true;
+			scene_change = true;
+			break;
+		case 1:
+		case 2:
+		case 3:
+		case 4:
+		case 5:
+		case 6:
+			full_sized = false;
+			button_selection = mode;
+			button_factor = 1;
+			selecting = true;
 
-		buttons[mode].design.toFront();
+			buttons[mode].design.toFront();
+			break;
+		
+		}
 	}
 
 	void updateShape() {
@@ -495,6 +523,30 @@ public class Dashboard extends Scene {
 			level_warning.setText(level_warning_text);
 
 			shitChanged = false;
+		}
+		/*
+		 * final double scene_speed = 2;
+		final double scene_bez_factor = 0.3;
+		final double scene_factor = 1;
+		final boolean scene_active = true;
+		 */
+		if(scene_change) {
+			if(scene_active) {
+				scene_factor += scene_speed / variables.frameRate;
+				if(scene_factor >= 1) {
+					scene_factor = 1;
+					scene_change = false;
+				}
+			}else {
+				scene_factor -= scene_speed / variables.frameRate;
+				if(scene_factor <= 0) {
+					scene_factor = 0;
+					scene_change = false;
+					this.scene_event = 0;
+				}
+			}
+			double scene_bez = Bezier.bezier_curve_2d(scene_factor, new Vector(scene_bez_factor, 0), new Vector(1 - scene_bez_factor, 1)).y;
+			this.root.setOpacity(scene_bez);
 		}
 	}
 }

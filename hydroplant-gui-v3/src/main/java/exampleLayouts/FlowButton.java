@@ -94,7 +94,7 @@ public class FlowButton extends DashboardButton {
 
 	public void setVirtualShape(double obj_width, double obj_height, int positioning) {
 		bubbles.setPos(positioning);
-		if (this.size_x != obj_height || this.size_y != obj_width) {
+		if (this.virt_sizey != obj_height || this.virt_sizex != obj_width) {
 			pd = new PoissonDisc((int) variables.width + (int) Math.floor(4 * constants.r * variables.height),
 					(int) variables.height + (int) Math.floor(4 * constants.r * variables.height),
 					constants.r * (int) variables.height);

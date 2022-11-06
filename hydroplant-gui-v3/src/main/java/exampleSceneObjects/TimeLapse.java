@@ -26,7 +26,7 @@ public class TimeLapse extends MiniScene {
 	private final double text_factor = 0.7;
 	private final double loading_bar_factor = 0.95;
 	private final double loading_outline_factor = 5;
-	private final double remove_factor = 0.5;
+	private final double remove_factor = 0.7;
 	private final double arc_factor = 0.1;
 
 	private double height, width;

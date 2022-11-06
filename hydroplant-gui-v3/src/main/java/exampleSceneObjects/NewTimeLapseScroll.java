@@ -601,32 +601,39 @@ public class NewTimeLapseScroll extends MiniScene {
 			if (speed_mmm.isPressed(mousex, mousey)) {
 				speed_or_dur = false;
 				speed_value -= 100;
+				speed_value = Math.floor(speed_value);
 				if (speed_value < 1)
 					speed_value = 1;
 			}
 			if (speed_mm.isPressed(mousex, mousey)) {
 				speed_or_dur = false;
 				speed_value -= 10;
+				speed_value = Math.floor(speed_value);
 				if (speed_value < 1)
 					speed_value = 1;
 			}
 			if (speed_m.isPressed(mousex, mousey)) {
 				speed_or_dur = false;
 				speed_value -= 1;
+				speed_value = Math.floor(speed_value);
 				if (speed_value < 1)
 					speed_value = 1;
 			}
 			if (speed_ppp.isPressed(mousex, mousey)) {
 				speed_or_dur = false;
 				speed_value += 100;
+				speed_value = Math.floor(speed_value);
 			}
 			if (speed_pp.isPressed(mousex, mousey)) {
 				speed_or_dur = false;
 				speed_value += 10;
+				speed_value = Math.floor(speed_value);
+				
 			}
 			if (speed_p.isPressed(mousex, mousey)) {
 				speed_or_dur = false;
 				speed_value += 1;
+				speed_value = Math.floor(speed_value);
 			}
 
 			if (length_m_h.isPressed(mousex, mousey)) {

@@ -180,8 +180,8 @@ public class TimeLapse extends MiniScene {
 		local_from_date = from;
 		local_to_date = to;
 
-		from_epoch = local_from_date.toEpochSecond(local_from_time, ZoneOffset.of("+2"));
-		to_epoch = local_to_date.toEpochSecond(local_to_time, ZoneOffset.of("+2"));
+		from_epoch = local_from_date.toEpochSecond(local_from_time, ZoneOffset.of("+1"));
+		to_epoch = local_to_date.toEpochSecond(local_to_time, ZoneOffset.of("+1"));
 
 		updateShape();
 	}
@@ -190,8 +190,8 @@ public class TimeLapse extends MiniScene {
 		local_from_time = from;
 		local_to_time = to;
 
-		from_epoch = local_from_date.toEpochSecond(local_from_time, ZoneOffset.of("+2"));
-		to_epoch = local_to_date.toEpochSecond(local_to_time, ZoneOffset.of("+2"));
+		from_epoch = local_from_date.toEpochSecond(local_from_time, ZoneOffset.of("+1"));
+		to_epoch = local_to_date.toEpochSecond(local_to_time, ZoneOffset.of("+1"));
 	}
 
 	public void setSpeed(double speed) {
@@ -236,8 +236,10 @@ public class TimeLapse extends MiniScene {
 	@Override
 	public void update() {
 		if(local_from_date != null && local_to_date != null && local_from_time != null && local_to_time != null) {
-			double now_epoch = LocalDate.now().toEpochSecond(LocalTime.now(), ZoneOffset.of("+2"));
+			double now_epoch = LocalDate.now().toEpochSecond(LocalTime.now(), ZoneOffset.of("+1"));
 			lb.setFactor((now_epoch - from_epoch)/(to_epoch - from_epoch));
+		}else {
+			lb.setFactor(0);
 		}
 	}
 

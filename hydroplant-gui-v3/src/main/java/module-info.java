@@ -1,4 +1,4 @@
-module module {
+module org.openjfx.hydroplant_gui_v3 {
 	exports exampleLayouts;
 	exports exampleSceneObjects;
 	exports standard;
@@ -11,7 +11,6 @@ module module {
 	exports timelapse;
 
 	requires com.google.gson;
-	requires java.sql;
 	requires javafx.base;
 	requires javafx.graphics;
 	requires org.eclipse.paho.client.mqttv3;

@@ -1,6 +1,5 @@
 package exampleSceneObjects;
 
-import java.sql.Date;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.ArrayList;

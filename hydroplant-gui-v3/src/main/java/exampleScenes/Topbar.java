@@ -13,7 +13,7 @@ import sceneObjects.FlatLayout;
 
 public class Topbar extends Scene {
 	private final double outl_factor = 1;
-	
+
 	BatteryStatus bs;
 	Button btn;
 	FlatLayout fl;
@@ -55,12 +55,12 @@ public class Topbar extends Scene {
 	public void updateSize() {
 		double outline_size = variables.height * constants.height_outline;
 		bb.setStrokeWidth(outline_size);
-		
+
 		backg_rec2.setStroke(Color.BLACK);
 		backg_rec2.setStrokeWidth(outline_size);
 		backg_rec2.setWidth2(variables.width);
 		backg_rec2.setHeight2(variables.height * constants.height_perc + outl_factor * outline_size);
-		
+
 		backg_rec.setStroke(Color.BLACK);
 		backg_rec.setStrokeWidth(outline_size);
 		backg_rec.setWidth2(variables.width);
@@ -80,10 +80,12 @@ public class Topbar extends Scene {
 	public void setBat(int bat_perc) {
 		bs.setBatLevel(bat_perc);
 	}
-	
+
 	public void setBackButton(boolean back_button) {
-		if(back_button) bb.getPane().setOpacity(1);
-		else  bb.getPane().setOpacity(0);
+		if (back_button)
+			bb.getPane().setOpacity(1);
+		else
+			bb.getPane().setOpacity(0);
 	}
 
 	@Override

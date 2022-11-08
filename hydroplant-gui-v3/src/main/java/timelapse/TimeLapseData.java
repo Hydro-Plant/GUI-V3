@@ -22,7 +22,8 @@ public class TimeLapseData {
 
 	}
 
-	public TimeLapseData(LocalDate date_from, LocalTime time_from, LocalDate date_to, LocalTime time_to, double speed, Duration duration, double frameRate, int pictures, int id, int mode) {
+	public TimeLapseData(LocalDate date_from, LocalTime time_from, LocalDate date_to, LocalTime time_to, double speed,
+			Duration duration, double frameRate, int pictures, int id, int mode) {
 		this.date_from = date_from.toString();
 		this.time_from = time_from.toString();
 		this.date_to = date_to.toString();
@@ -37,7 +38,8 @@ public class TimeLapseData {
 		this.id = id;
 	}
 
-	public TimeLapseData(LocalDate date_from, LocalTime time_from, LocalDate date_to, LocalTime time_to, double speed, Duration duration, double frameRate, int pictures, int mode) {
+	public TimeLapseData(LocalDate date_from, LocalTime time_from, LocalDate date_to, LocalTime time_to, double speed,
+			Duration duration, double frameRate, int pictures, int mode) {
 		this.date_from = date_from.toString();
 		this.time_from = time_from.toString();
 		this.date_to = date_to.toString();
@@ -51,19 +53,19 @@ public class TimeLapseData {
 
 		this.id = -1;
 	}
-	
+
 	public LocalDate getDateFrom() {
 		return LocalDate.parse(date_from);
 	}
-	
+
 	public LocalDate getDateTo() {
 		return LocalDate.parse(date_to);
 	}
-	
+
 	public LocalTime getTimeFrom() {
 		return LocalTime.parse(time_from);
 	}
-	
+
 	public LocalTime getTimeTo() {
 		return LocalTime.parse(time_to);
 	}

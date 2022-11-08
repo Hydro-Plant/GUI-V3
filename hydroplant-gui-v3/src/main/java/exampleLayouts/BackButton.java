@@ -30,7 +30,7 @@ public class BackButton extends Layout {
 		bg_circle.setStroke(constants.outline_col);
 
 		arrow_img = new Image("file:pics/backwards_arrow.png");
-		//arrow_img = new Image("file:jesus.png");
+		// arrow_img = new Image("file:jesus.png");
 		arrow.setPreserveRatio(true);
 		arrow.setFitWidth(circle_size * constants.pic_circle_value_size * arrow_img.getWidth());
 		arrow.setX2((int) (-circle_size * constants.pic_circle_value_pos));
@@ -58,7 +58,7 @@ public class BackButton extends Layout {
 		bg_circle.setStroke(constants.outline_col);
 
 		arrow_img = new Image("file:pics/backwards_arrow.png");
-		//arrow_img = new Image("file:jesus.png");
+		// arrow_img = new Image("file:jesus.png");
 		arrow.setPreserveRatio(true);
 		arrow.setFitWidth(circle_size * constants.pic_circle_value_size * arrow_img.getWidth());
 		arrow.setX2((int) (-circle_size * constants.pic_circle_value_pos));

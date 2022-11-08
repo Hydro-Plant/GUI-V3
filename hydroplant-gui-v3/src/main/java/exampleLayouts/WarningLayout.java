@@ -31,23 +31,23 @@ public class WarningLayout extends Layout {
 	final double sign_pos = 100;
 	final double[] bezier_space = { 0.3, 0.3 };
 
-	boolean status = false;								// Should the warning be open
-	boolean text_status = false;						// Is the text open
-	double text_factor = 0;								// How far the text is shown
-	double text_speed = 1;								// Speed of the text showing
-	boolean rec_status = false;							// Is the rectangle open
-	double rec_factor = 0;								// How far the rectangle is open
-	double rec_speed = 1;								// Speed of the rectangle opening
-	boolean alpha_status = false;						// Should the warning be visible
-	double alpha_factor = 0;							// How visible the warning is
-	double alpha_speed = 0.5;							// How fast the warning will be visible
+	boolean status = false; // Should the warning be open
+	boolean text_status = false; // Is the text open
+	double text_factor = 0; // How far the text is shown
+	double text_speed = 1; // Speed of the text showing
+	boolean rec_status = false; // Is the rectangle open
+	double rec_factor = 0; // How far the rectangle is open
+	double rec_speed = 1; // Speed of the rectangle opening
+	boolean alpha_status = false; // Should the warning be visible
+	double alpha_factor = 0; // How visible the warning is
+	double alpha_speed = 0.5; // How fast the warning will be visible
 
-	boolean changing_rect = false;						// Is the rectangle currently opening/closing
-	boolean changing_text = false;						// Is the text currently appearing/disappearing
+	boolean changing_rect = false; // Is the rectangle currently opening/closing
+	boolean changing_text = false; // Is the text currently appearing/disappearing
 
-	boolean moving = false;								// Is the appearance of the warning changing (rectangle, text,
-															// etc) (used to reduce processing power if nothing happens)
-	boolean alpha_change = false;						// Is alpha changing (I don't know what this does)
+	boolean moving = false; // Is the appearance of the warning changing (rectangle, text,
+							// etc) (used to reduce processing power if nothing happens)
+	boolean alpha_change = false; // Is alpha changing (I don't know what this does)
 
 	public WarningLayout() {
 		wrn_sign = new ImageView2();

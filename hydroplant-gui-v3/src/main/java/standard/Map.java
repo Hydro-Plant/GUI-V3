@@ -10,6 +10,9 @@ public class Map {
 	}
 
 	public static Color map(double factor, Color color1, Color color2) {
-		return Color.rgb((int)((factor * color2.getRed() + (1 - factor) * color1.getRed()) * 255), (int)((factor * color2.getGreen() + (1 - factor) * color1.getGreen()) * 255), (int)((factor * color2.getBlue() + (1 - factor) * color1.getBlue()) * 255), factor * color2.getOpacity() + (1 - factor) * color1.getOpacity());
+		return Color.rgb((int) ((factor * color2.getRed() + (1 - factor) * color1.getRed()) * 255),
+				(int) ((factor * color2.getGreen() + (1 - factor) * color1.getGreen()) * 255),
+				(int) ((factor * color2.getBlue() + (1 - factor) * color1.getBlue()) * 255),
+				factor * color2.getOpacity() + (1 - factor) * color1.getOpacity());
 	}
 }

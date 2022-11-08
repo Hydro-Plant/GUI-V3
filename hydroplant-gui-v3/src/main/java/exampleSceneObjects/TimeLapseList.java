@@ -103,9 +103,9 @@ public class TimeLapseList extends MiniScene {
 	}
 
 	public double[] getShape() {
-		return new double[] {width, height};
+		return new double[] { width, height };
 	}
-	
+
 	private void reload() {
 		for (int x = 0; x < tl.size(); x++) {
 			this.tl.get(x).setShape(width, tl_height);
@@ -116,7 +116,8 @@ public class TimeLapseList extends MiniScene {
 
 	public int mouseClicked(double mousex, double mousey) {
 		for (TimeLapse timel : tl) {
-			if (mousex - this.positionx >= 0 && mousey - this.positiony >= 0 && mousex - this.positionx <= width && mousey - this.positiony <= height) {
+			if (mousex - this.positionx >= 0 && mousey - this.positiony >= 0 && mousex - this.positionx <= width
+					&& mousey - this.positiony <= height) {
 				if (timel.isPressed(mousex - this.positionx, mousey - this.positiony - scene.getPosition()[1])) {
 					return timel.getId();
 				}

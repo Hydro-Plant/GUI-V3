@@ -28,8 +28,10 @@ public class LoadingBar extends FlatLayout {
 	}
 
 	public void setFactor(double factor) {
-		if(factor < 0) factor = 0;
-		if(factor > 1) factor = 1;
+		if (factor < 0)
+			factor = 0;
+		if (factor > 1)
+			factor = 1;
 		this.factor = factor;
 		updateSize();
 	}
@@ -57,7 +59,8 @@ public class LoadingBar extends FlatLayout {
 		background.setWidth2(width - outline);
 		background.setHeight2(height - outline);
 
-		bar.setX2(Positioning.positioning(positioning, 3)[0] * background.getWidth() + outline / 2 + (height - 2 * outline) * gap_factor / 2);
+		bar.setX2(Positioning.positioning(positioning, 3)[0] * background.getWidth() + outline / 2
+				+ (height - 2 * outline) * gap_factor / 2);
 		bar.setY2((Positioning.positioning(positioning, 3)[1]) * background.getHeight());
 
 		bar.setWidth2(((width - 2 * outline) - (height - 2 * outline) * gap_factor) * factor);

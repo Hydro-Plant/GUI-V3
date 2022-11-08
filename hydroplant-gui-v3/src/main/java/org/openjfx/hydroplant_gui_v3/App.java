@@ -58,7 +58,7 @@ public class App extends Application {
 
 		ss = new StartScene();
 		SceneBundle ss_sb = new SceneBundle(ss);
-		
+
 		tls = new TimeLapseScene();
 		SceneBundle tls_sb = new SceneBundle(tls);
 
@@ -75,7 +75,7 @@ public class App extends Application {
 		ss_sb.addDep(1, tls_sb, 0);
 		db_sb.addDep(0, ss_sb, 0);
 		tls_sb.addDep(0, ss_sb, 0);
-		
+
 		// Init scene handler
 
 		sh = new SceneHandler();
@@ -103,8 +103,8 @@ public class App extends Application {
 
 		});
 
-		scene.setOnMouseClicked(new EventHandler<MouseEvent>() { 									// Handles mouse
-																 									// clicks
+		scene.setOnMouseClicked(new EventHandler<MouseEvent>() { // Handles mouse
+																	// clicks
 			@Override
 			public void handle(MouseEvent event) {
 				// calc_fr = !calc_fr;
@@ -114,16 +114,16 @@ public class App extends Application {
 			}
 		});
 
-		scene.setOnMouseMoved(new EventHandler<MouseEvent>() { 										// Handles mouse
-																 										// movement
+		scene.setOnMouseMoved(new EventHandler<MouseEvent>() { // Handles mouse
+																// movement
 			@Override
 			public void handle(MouseEvent event) {
 				sh.mouseMoved(event.getSceneX(), event.getSceneY());
 			}
 		});
 
-		scene.setOnMouseDragged(new EventHandler<MouseEvent>() { 										// Handles
-																 										// mouse
+		scene.setOnMouseDragged(new EventHandler<MouseEvent>() { // Handles
+																	// mouse
 			// movement
 			@Override
 			public void handle(MouseEvent event) {
@@ -187,15 +187,17 @@ public class App extends Application {
 				tb.update();
 				if (sh.handle()) {
 					System.out.println("A switchd ja scene madafaka");
-					if(sh.getActive().equals(ss)) tb.setBackButton(false);
-					else tb.setBackButton(true);
+					if (sh.getActive().equals(ss))
+						tb.setBackButton(false);
+					else
+						tb.setBackButton(true);
 					root.getChildren().set(0, sh.getActive().root);
 				}
 				last = now;
 			}
 		};
 
-		at.start(); 				// Starts the animation launcher
+		at.start(); // Starts the animation launcher
 	}
 
 	public static void main(String[] args) {

@@ -199,7 +199,8 @@ public class TimeLapse extends MiniScene {
 	}
 
 	public void setDuration(Duration duration) {
-		this.duration.setText2(String.format("%02d:%02d:%02d:%02d", duration.toDaysPart(), duration.toHoursPart(), duration.toMinutesPart(), duration.toSecondsPart()));
+		this.duration.setText2(String.format("%02d:%02d:%02d:%02d", duration.toDaysPart(), duration.toHoursPart(),
+				duration.toMinutesPart(), duration.toSecondsPart()));
 	}
 
 	public void setFPS(double fps) {
@@ -235,10 +236,10 @@ public class TimeLapse extends MiniScene {
 
 	@Override
 	public void update() {
-		if(local_from_date != null && local_to_date != null && local_from_time != null && local_to_time != null) {
+		if (local_from_date != null && local_to_date != null && local_from_time != null && local_to_time != null) {
 			double now_epoch = LocalDate.now().toEpochSecond(LocalTime.now(), ZoneOffset.of("+1"));
-			lb.setFactor((now_epoch - from_epoch)/(to_epoch - from_epoch));
-		}else {
+			lb.setFactor((now_epoch - from_epoch) / (to_epoch - from_epoch));
+		} else {
 			lb.setFactor(0);
 		}
 	}
@@ -251,7 +252,8 @@ public class TimeLapse extends MiniScene {
 
 		rl.setSize(height * 0.2 * remove_factor);
 		b.setShape(rl.getWidth(), rl.getHeight());
-		b.setPosition(Positioning.positioning(positioning, 8)[0] * width - height * (1 - mode_factor) / 2, (Positioning.positioning(positioning, 8)[1] - (1 - mode_factor) / 2) * height);
+		b.setPosition(Positioning.positioning(positioning, 8)[0] * width - height * (1 - mode_factor) / 2,
+				(Positioning.positioning(positioning, 8)[1] - (1 - mode_factor) / 2) * height);
 
 		mode_pic.setX2(width * Positioning.positioning(positioning, 0)[0] + height / 2);
 		mode_pic.setY2(height * Positioning.positioning(positioning, 0)[1] + height / 2);
@@ -259,7 +261,8 @@ public class TimeLapse extends MiniScene {
 		mode_pic.setFitHeight2(height * mode_factor);
 
 		double left_line = width * Positioning.positioning(positioning, 0)[0] + height;
-		double right_line = width * Positioning.positioning(positioning, 2)[0] - rl.getWidth() - height * (1 - mode_factor);
+		double right_line = width * Positioning.positioning(positioning, 2)[0] - rl.getWidth()
+				- height * (1 - mode_factor);
 
 		double y1 = height * Positioning.positioning(positioning, 0)[1] + height * 0.125;
 		double y2 = y1 + height * 0.25;

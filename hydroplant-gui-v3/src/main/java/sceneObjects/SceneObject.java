@@ -34,7 +34,8 @@ public class SceneObject {
 		return id == other.id;
 	}
 
-	public void setPosition(double positionx, double positiony, int positioning) { // Objektposition wird intern verändert
+	public void setPosition(double positionx, double positiony, int positioning) { // Objektposition wird intern
+																					// verändert
 		this.positionx = positionx;
 		this.positiony = positiony;
 		this.positioning = positioning;
@@ -52,7 +53,7 @@ public class SceneObject {
 	}
 
 	public double[] getPosition() {
-		return new double[] {this.positionx, this.positiony};
+		return new double[] { this.positionx, this.positiony };
 	}
 
 	public void toFront() {

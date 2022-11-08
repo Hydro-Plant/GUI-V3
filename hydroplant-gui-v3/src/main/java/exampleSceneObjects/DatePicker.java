@@ -87,7 +87,7 @@ public class DatePicker extends MiniScene {
 		// ---------------------------- Date Buttons
 
 		number_button = new ArrayList<>();
-		for(int x = 0; x < 31; x++) {
+		for (int x = 0; x < 31; x++) {
 			number_button.add(new Button());
 			number_button.get(x).setDesign(new DateButton(x + 1));
 			((DateButton) number_button.get(x).getDesign()).setPos(4);
@@ -103,7 +103,7 @@ public class DatePicker extends MiniScene {
 		addObject(next);
 		addObject(last);
 
-		for(int x = 0; x < 31; x++) {
+		for (int x = 0; x < 31; x++) {
 			addObject(number_button.get(x));
 		}
 	}
@@ -118,8 +118,8 @@ public class DatePicker extends MiniScene {
 		top.setStrokeWidth(outline * outline_factor);
 		next_l.setOutline(outline * outline_factor);
 		last_l.setOutline(outline * outline_factor);
-		for(int x = 0; x < 31; x++) {
-			((DateButton)number_button.get(x).getDesign()).setOutline(outline * date_outline_factor);
+		for (int x = 0; x < 31; x++) {
+			((DateButton) number_button.get(x).getDesign()).setOutline(outline * date_outline_factor);
 		}
 	}
 
@@ -148,14 +148,16 @@ public class DatePicker extends MiniScene {
 		month_year.setY2(Positioning.positioning(positioning, 1)[1] * sizey + sizey * top_factor / 2);
 		month_year.setSize(sizey * top_factor * top_text_factor);
 
-		next.setPosition(Positioning.positioning(positioning, 2)[0] * sizex, Positioning.positioning(positioning, 2)[1] * sizey);
+		next.setPosition(Positioning.positioning(positioning, 2)[0] * sizex,
+				Positioning.positioning(positioning, 2)[1] * sizey);
 		next.setShape(sizex * (1 - top_width_factor) / 2, sizey * top_factor);
 		next_l.setShape(sizex * (1 - top_width_factor) / 2, sizey * top_factor);
-		last.setPosition(Positioning.positioning(positioning, 0)[0] * sizex, Positioning.positioning(positioning, 0)[1] * sizey);
+		last.setPosition(Positioning.positioning(positioning, 0)[0] * sizex,
+				Positioning.positioning(positioning, 0)[1] * sizey);
 		last.setShape(sizex * (1 - top_width_factor) / 2, sizey * top_factor);
 		last_l.setShape(sizex * (1 - top_width_factor) / 2, sizey * top_factor);
 
-		for(int x = 0; x < 31; x++) {
+		for (int x = 0; x < 31; x++) {
 			double edge_gap = sizey * (1 - top_factor) * edge_gap_factor;
 			double gap = sizey * (1 - top_factor) * gap_factor;
 			double date_height = (sizey * (1 - top_factor) - 2 * edge_gap - 4 * gap) / 5;
@@ -163,7 +165,8 @@ public class DatePicker extends MiniScene {
 
 			((DateButton) number_button.get(x).getDesign()).setShape(date_width, date_height);
 			number_button.get(x).setShape(date_width, date_height);
-			number_button.get(x).setPosition(date_width / 2 + edge_gap + (date_width + gap) * (x % 7), sizey * top_factor + edge_gap + date_height / 2 + Math.floor(x / 7) * (date_height + gap));
+			number_button.get(x).setPosition(date_width / 2 + edge_gap + (date_width + gap) * (x % 7),
+					sizey * top_factor + edge_gap + date_height / 2 + Math.floor(x / 7) * (date_height + gap));
 		}
 	}
 
@@ -173,7 +176,7 @@ public class DatePicker extends MiniScene {
 	}
 
 	private void updateDate() {
-		for(int x = 0; x < 31; x++) {
+		for (int x = 0; x < 31; x++) {
 			((DateButton) number_button.get(x).getDesign()).setVisible(x < date.lengthOfMonth());
 			((DateButton) number_button.get(x).getDesign()).setActive(x == date.getDayOfMonth() - 1);
 		}
@@ -183,22 +186,22 @@ public class DatePicker extends MiniScene {
 
 	@Override
 	public void update() {
-		for(int x = 0; x < 31; x++) {
+		for (int x = 0; x < 31; x++) {
 			number_button.get(x).update();
 		}
 	}
 
 	public void mouseClicked(double mousex, double mousey) {
-		if(next.isPressed(mousex - this.positionx, mousey - this.positiony)) {
+		if (next.isPressed(mousex - this.positionx, mousey - this.positiony)) {
 			date = date.plusMonths(1);
 			updateDate();
 		}
-		if(last.isPressed(mousex - this.positionx, mousey - this.positiony)) {
+		if (last.isPressed(mousex - this.positionx, mousey - this.positiony)) {
 			date = date.minusMonths(1);
 			updateDate();
 		}
-		for(int x = 0; x < date.lengthOfMonth(); x++) {
-			if(number_button.get(x).isPressed(mousex - this.positionx, mousey - this.positiony)) {
+		for (int x = 0; x < date.lengthOfMonth(); x++) {
+			if (number_button.get(x).isPressed(mousex - this.positionx, mousey - this.positiony)) {
 				date = LocalDate.of(date.getYear(), date.getMonthValue(), x + 1);
 				updateDate();
 				break;

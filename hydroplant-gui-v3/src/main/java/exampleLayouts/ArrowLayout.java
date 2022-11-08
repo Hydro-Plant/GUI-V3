@@ -61,7 +61,7 @@ public class ArrowLayout extends Layout {
 		arrow.setFitHeight2(Math.min(sizex, sizey) * image_factor);
 	}
 
-	public void setDirection(int direction) {					// 0 = Up
+	public void setDirection(int direction) { // 0 = Up
 		arrow.setRotate(90 + 90 * direction);
 	}
 }

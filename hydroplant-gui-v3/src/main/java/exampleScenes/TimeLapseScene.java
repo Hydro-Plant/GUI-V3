@@ -34,12 +34,12 @@ public class TimeLapseScene extends Scene {
 	private final double speed = 1;
 	private final double bez_factor = 0.3;
 	private final double extra_top_factor = 0.0;
-	
+
 	private final double tll_width = 0.95;
 	private final double tll_height = 0.95;
 	private final double tll_height_factor = 0.4;
 	private final double tll_gap_factor = 0.02;
-	
+
 	final double scene_speed = 2;
 	final double scene_bez_factor = 0.3;
 	double scene_factor = 1;
@@ -121,7 +121,7 @@ public class TimeLapseScene extends Scene {
 		scroll.setPosition(scroll_factor, scroll_factor);
 
 		ca = new ColorAdjust();
-		
+
 		tll = new TimeLapseList();
 		tll.setPos(0);
 		tll.getPane().setEffect(ca);
@@ -172,23 +172,24 @@ public class TimeLapseScene extends Scene {
 					1, this.ntl_first_posy, this.ntl_second_posy);
 			ntl.setPosition(ntl.getPosition()[0], bez);
 		}
-		
-		if(scene_change) {
-			if(scene_active) {
+
+		if (scene_change) {
+			if (scene_active) {
 				scene_factor += scene_speed / variables.frameRate;
-				if(scene_factor >= 1) {
+				if (scene_factor >= 1) {
 					scene_factor = 1;
 					scene_change = false;
 				}
-			}else {
+			} else {
 				scene_factor -= scene_speed / variables.frameRate;
-				if(scene_factor <= 0) {
+				if (scene_factor <= 0) {
 					scene_factor = 0;
 					scene_change = false;
 					this.scene_event = 0;
 				}
 			}
-			double scene_bez = Bezier.bezier_curve_2d(scene_factor, new Vector(scene_bez_factor, 0), new Vector(1 - scene_bez_factor, 1)).y;
+			double scene_bez = Bezier.bezier_curve_2d(scene_factor, new Vector(scene_bez_factor, 0),
+					new Vector(1 - scene_bez_factor, 1)).y;
 			this.root.setOpacity(scene_bez);
 		}
 	}
@@ -211,7 +212,7 @@ public class TimeLapseScene extends Scene {
 			moving = true;
 			break;
 		}
-		
+
 		if (!ntl_mode) {
 			int pressed = tll.mouseClicked(mousex, mousey);
 			if (pressed != -1) {
@@ -228,57 +229,63 @@ public class TimeLapseScene extends Scene {
 
 	@Override
 	public void mousePressed(double mousex, double mousey) {
-		if (!ntl_mode) tll.mousePressed(mousex, mousey);
+		if (!ntl_mode)
+			tll.mousePressed(mousex, mousey);
 		ntl.mousePressed(mousex, mousey);
 	}
 
 	@Override
 	public void mouseReleased(double mousex, double mousey) {
-		if (!ntl_mode) tll.mouseReleased(mousex, mousey);
+		if (!ntl_mode)
+			tll.mouseReleased(mousex, mousey);
 		ntl.mouseReleased(mousex, mousey);
 	}
 
 	@Override
 	public void mouseDragged(double mousex, double mousey) {
-		if (!ntl_mode) tll.mouseDragged(mousex, mousey);
+		if (!ntl_mode)
+			tll.mouseDragged(mousex, mousey);
 		ntl.mouseDragged(mousex, mousey);
 	}
 
+	@Override
 	public void externalButton(int btn) {
-		switch(btn) {
+		switch (btn) {
 		case 0:
-			if(ntl_mode == true) {
+			if (ntl_mode) {
 				ntl.setActive(false);
 				ntl.setMode(ntl_mode);
 				ntl_mode = !ntl_mode;
 				moving = true;
-			}else {
+			} else {
 				scene_active = false;
 				scene_change = true;
 			}
 			break;
 		}
 	}
-	
+
 	@Override
 	public void loadMode(int mode) {
-		switch(mode) {
+		switch (mode) {
 		case 0:
 			ntl_factor = 0;
 			ntl_mode = false;
-			
+
 			scene_factor = 0;
 			scene_active = true;
 			scene_change = true;
 			break;
 		}
 	}
-	
+
 	@Override
 	public void updateSize() {
-		tll.setShape(tll_width * variables.width, tll_height * (variables.height * (1 - constants.height_perc) * (1 - extra_top_factor)));
+		tll.setShape(tll_width * variables.width,
+				tll_height * (variables.height * (1 - constants.height_perc) * (1 - extra_top_factor)));
 		double top = variables.height * (constants.height_perc + extra_top_factor);
-		tll.setPosition(variables.width / 2 - (tll_width * variables.width) / 2, top + (variables.height - top - tll.getShape()[1]) / 2);
+		tll.setPosition(variables.width / 2 - (tll_width * variables.width) / 2,
+				top + (variables.height - top - tll.getShape()[1]) / 2);
 		tll.setOutline(variables.height * constants.height_outline);
 		tll.setTLGap(variables.height * tll_gap_factor);
 		tll.setTLHeight(variables.height * tll_height_factor);

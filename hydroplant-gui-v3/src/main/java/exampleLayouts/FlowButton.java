@@ -136,10 +136,8 @@ public class FlowButton extends DashboardButton {
 				for (int y = 0; y < size_perc.length; y++) {
 					if (point.getRand() <= size_perc[y]) {
 						Vector b_pos = new Vector(
-								point.getPos().x - Math.floor(2 * constants.r * variables.height)
-										- ges_shift[0],
-								point.getPos().y - Math.floor(2 * constants.r * variables.height)
-										- ges_shift[1]);
+								point.getPos().x - Math.floor(2 * constants.r * variables.height) - ges_shift[0],
+								point.getPos().y - Math.floor(2 * constants.r * variables.height) - ges_shift[1]);
 
 						// - Math.floor(2 * constants.r * variables.height) --> Disk grid is slightly
 						// bigger than screen by 4 * constants.r * variables.heihgt

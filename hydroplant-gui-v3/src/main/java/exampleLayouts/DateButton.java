@@ -91,21 +91,22 @@ public class DateButton extends Layout {
 
 	@Override
 	public void update() {
-		if(moving) {
-			if(active) {
+		if (moving) {
+			if (active) {
 				factor += speed_factor / variables.frameRate;
-				if(factor >= 1) {
+				if (factor >= 1) {
 					factor = 1;
 					moving = false;
 				}
-			}else {
+			} else {
 				factor -= speed_factor / variables.frameRate;
-				if(factor <= 0) {
+				if (factor <= 0) {
 					factor = 0;
 					moving = false;
 				}
 			}
-			double bez_factor = Bezier.bezier_curve_2d(factor, new Vector(bezier_factor, 0), new Vector(1 - bezier_factor, 1)).y;
+			double bez_factor = Bezier.bezier_curve_2d(factor, new Vector(bezier_factor, 0),
+					new Vector(1 - bezier_factor, 1)).y;
 			backg.setStroke(Map.map(bez_factor, Color.gray(gray_factor), Color.DARKBLUE));
 		}
 	}

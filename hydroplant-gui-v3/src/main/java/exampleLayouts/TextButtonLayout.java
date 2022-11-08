@@ -31,12 +31,12 @@ public class TextButtonLayout extends Layout {
 		addObject(backg);
 		addObject(text);
 	}
-	
+
 	public void setTextUp(double up) {
 		this.test_up_factor = up;
 		updateShape();
 	}
-	
+
 	public void setSize(double size) {
 		this.size = size;
 		updateShape();

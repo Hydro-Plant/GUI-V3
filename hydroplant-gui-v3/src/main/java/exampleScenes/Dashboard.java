@@ -28,7 +28,7 @@ public class Dashboard extends Scene {
 	final double warning_width_factor = 0.9;
 	final double warning_size_factor = 0.0003;
 	final double warning_pos_factor = 0.07;
-	
+
 	final double scene_speed = 2;
 	final double scene_bez_factor = 0.3;
 	double scene_factor = 1;
@@ -274,15 +274,14 @@ public class Dashboard extends Scene {
 			break;
 		}
 	}
-	
+
 	/*
-	final double scene_factor = 1;
-	final boolean scene_active = true;
+	 * final double scene_factor = 1; final boolean scene_active = true;
 	 */
 
 	@Override
 	public void loadMode(int mode) {
-		switch(mode) {
+		switch (mode) {
 		case 0:
 			scene_factor = 0;
 			scene_active = true;
@@ -301,7 +300,7 @@ public class Dashboard extends Scene {
 
 			buttons[mode].design.toFront();
 			break;
-		
+
 		}
 	}
 
@@ -359,9 +358,10 @@ public class Dashboard extends Scene {
 		}
 
 		/*
-		 * if (selecting) { full_sized = false; selecting = true; for (int x = 0; x < 6; x++) { if
-		 * (buttons[x].isPressed(mousex, mousey)) { res = x; buttons[x].design.toFront(); full_sized = true;
-		 * selecting = false; button_selection = x; break; } } }
+		 * if (selecting) { full_sized = false; selecting = true; for (int x = 0; x < 6;
+		 * x++) { if (buttons[x].isPressed(mousex, mousey)) { res = x;
+		 * buttons[x].design.toFront(); full_sized = true; selecting = false;
+		 * button_selection = x; break; } } }
 		 */
 		return res;
 	}
@@ -525,27 +525,26 @@ public class Dashboard extends Scene {
 			shitChanged = false;
 		}
 		/*
-		 * final double scene_speed = 2;
-		final double scene_bez_factor = 0.3;
-		final double scene_factor = 1;
-		final boolean scene_active = true;
+		 * final double scene_speed = 2; final double scene_bez_factor = 0.3; final
+		 * double scene_factor = 1; final boolean scene_active = true;
 		 */
-		if(scene_change) {
-			if(scene_active) {
+		if (scene_change) {
+			if (scene_active) {
 				scene_factor += scene_speed / variables.frameRate;
-				if(scene_factor >= 1) {
+				if (scene_factor >= 1) {
 					scene_factor = 1;
 					scene_change = false;
 				}
-			}else {
+			} else {
 				scene_factor -= scene_speed / variables.frameRate;
-				if(scene_factor <= 0) {
+				if (scene_factor <= 0) {
 					scene_factor = 0;
 					scene_change = false;
 					this.scene_event = 0;
 				}
 			}
-			double scene_bez = Bezier.bezier_curve_2d(scene_factor, new Vector(scene_bez_factor, 0), new Vector(1 - scene_bez_factor, 1)).y;
+			double scene_bez = Bezier.bezier_curve_2d(scene_factor, new Vector(scene_bez_factor, 0),
+					new Vector(1 - scene_bez_factor, 1)).y;
 			this.root.setOpacity(scene_bez);
 		}
 	}

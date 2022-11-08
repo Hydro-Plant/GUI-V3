@@ -1,7 +1,6 @@
 package exampleSceneObjects;
 
 import java.time.Duration;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 
@@ -11,7 +10,6 @@ import gui.Layout;
 import gui.variables;
 import javafx.geometry.VPos;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx2.ImageView2;
 import javafx2.Rectangle2;
@@ -257,10 +255,10 @@ public class NewTimeLapseScroll extends MiniScene {
 		mini_buttons.add(pic_pp);
 		mini_buttons.add(pic_ppp);
 
-		for (int x = 0; x < mini_buttons.size(); x++) {
-			mini_buttons.get(x).setPos(4);
-			mini_buttons.get(x).setTextUp(text_up);
-			mini_buttons.get(x).setSize(small_btn_text_factor);
+		for (TextButton mini_button : mini_buttons) {
+			mini_button.setPos(4);
+			mini_button.setTextUp(text_up);
+			mini_button.setSize(small_btn_text_factor);
 		}
 
 		tl_mode_img = new ImageView2();
@@ -332,8 +330,8 @@ public class NewTimeLapseScroll extends MiniScene {
 		l.addObject(pictures_txt);
 		l.addObject(pictures_value_txt);
 
-		for (int x = 0; x < mini_buttons.size(); x++) {
-			addObject(mini_buttons.get(x));
+		for (TextButton mini_button : mini_buttons) {
+			addObject(mini_button);
 		}
 		addObject(tl_mode_up);
 		addObject(tl_mode_down);
@@ -351,8 +349,8 @@ public class NewTimeLapseScroll extends MiniScene {
 		tl_mode_up_l.setOutline(outline * mode_rec_outline);
 		tl_mode_down_l.setOutline(outline * mode_rec_outline);
 
-		for (int x = 0; x < mini_buttons.size(); x++) {
-			mini_buttons.get(x).setOutline(outline * mode_rec_outline);
+		for (TextButton mini_button : mini_buttons) {
+			mini_button.setOutline(outline * mode_rec_outline);
 		}
 	}
 
@@ -368,7 +366,7 @@ public class NewTimeLapseScroll extends MiniScene {
 				- dp_from.getLocalDate().toEpochSecond(tp_from.getTime(), ZoneOffset.of("+1"));
 
 		if (!speed_or_dur) {
-			duration_value = duration_value.ofSeconds((long) (second_difference / speed_value));
+			duration_value = Duration.ofSeconds((long) (second_difference / speed_value));
 		} else {
 			speed_value = second_difference / duration_value.toSeconds();
 		}
@@ -481,8 +479,8 @@ public class NewTimeLapseScroll extends MiniScene {
 		pic_pp.setPosition(btn_2, v4);
 		pic_ppp.setPosition(btn_3, v4);
 
-		for (int x = 0; x < mini_buttons.size(); x++) {
-			mini_buttons.get(x).setShape(sizex * small_btn_factor, sizex * small_btn_factor);
+		for (TextButton mini_button : mini_buttons) {
+			mini_button.setShape(sizex * small_btn_factor, sizex * small_btn_factor);
 		}
 
 		tl_mode_rec.setX2(left_edge);
@@ -597,7 +595,7 @@ public class NewTimeLapseScroll extends MiniScene {
 				mode = 1;
 				moving = true;
 			}
-			
+
 			if (speed_mmm.isPressed(mousex, mousey)) {
 				speed_or_dur = false;
 				speed_value -= 100;
@@ -628,7 +626,7 @@ public class NewTimeLapseScroll extends MiniScene {
 				speed_or_dur = false;
 				speed_value += 10;
 				speed_value = Math.floor(speed_value);
-				
+
 			}
 			if (speed_p.isPressed(mousex, mousey)) {
 				speed_or_dur = false;
@@ -742,7 +740,7 @@ public class NewTimeLapseScroll extends MiniScene {
 				tl_mode_img.setImage2(new Image(String.format("file:pics/mode%02d.png", mode_value)));
 			}
 			recalculate();
-			
+
 			if (finish3.isPressed(mousex, mousey)) {
 				recalculate();
 				return 0;

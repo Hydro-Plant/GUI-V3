@@ -10,6 +10,4 @@ public class PHScene extends InfoScene {
 		phb = (PHButton) super.bg_l;
 	}
 
-
-
 }

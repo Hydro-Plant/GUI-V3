@@ -9,28 +9,25 @@ public class TimeLapsePos {
 	public ArrayList<String> times;
 	public ArrayList<Double> pos;
 	public ArrayList<Double> angle;
-	public ArrayList<Boolean> already_done;
+	public long at_image = 0;
 	public int id;
-
+	
 	public TimeLapsePos() {
-		this.dates = new ArrayList<>();
-		this.times = new ArrayList<>();
-		this.pos = new ArrayList<>();
-		this.angle = new ArrayList<>();
-		this.already_done = new ArrayList<>();
+		this.dates = new ArrayList<String>();
+		this.times = new ArrayList<String>();
+		this.pos = new ArrayList<Double>();
+		this.angle = new ArrayList<Double>();
 		this.id = -1;
 	}
-
-	public TimeLapsePos(ArrayList<LocalDate> dates, ArrayList<LocalTime> times, ArrayList<Double> pos,
-			ArrayList<Double> angle, int id) {
+	
+	public TimeLapsePos(ArrayList<LocalDate> dates, ArrayList<LocalTime> times, ArrayList<Double> pos, ArrayList<Double> angle, int id) {
 		this.id = id;
-		this.dates = new ArrayList<>();
-		this.times = new ArrayList<>();
+		this.dates = new ArrayList<String>();
+		this.times = new ArrayList<String>();
 		this.pos = pos;
 		this.angle = angle;
-		this.already_done = new ArrayList<>();
-
-		for (int x = 0; x < dates.size(); x++) {
+		
+		for(int x = 0; x < dates.size(); x++) {
 			this.dates.add(dates.get(x).toString());
 			this.times.add(times.get(x).toString());
 		}

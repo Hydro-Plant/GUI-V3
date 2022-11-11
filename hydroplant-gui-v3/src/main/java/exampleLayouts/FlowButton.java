@@ -123,7 +123,7 @@ public class FlowButton extends DashboardButton {
 		pd.updateGrid(new Vector(constants.speed_factor * this.value * time_passed, 0));
 		pd.calcMissing();
 
-		bubbles_img = new WritableImage((int) size_x, (int) size_y);
+		bubbles_img = new WritableImage((int) Math.floor(size_x), (int) Math.floor(size_y));
 
 		double[] shift = Positioning.positioning(this.positioning, 0);
 		double[] ges_shift = { positionx + shift[0] * size_x, positiony + shift[1] * size_y };
@@ -151,7 +151,7 @@ public class FlowButton extends DashboardButton {
 							int local_x = (int) (b_pos.x - (bubble.getWidth() / 2));
 							int local_y = (int) (b_pos.y - (bubble.getHeight() / 2));
 
-							if (local_x > -bubble.getWidth() && local_x < size_x) {
+							if (local_x > -bubble.getWidth() && local_x < (int) Math.floor(size_x)) {
 								int local_x_with_boundry = local_x;
 								int local_width_with_boundry = (int) Math.floor(bubble.getWidth());
 								int local_image_start = 0;
@@ -159,8 +159,8 @@ public class FlowButton extends DashboardButton {
 									local_x_with_boundry = 0;
 									local_width_with_boundry += local_x;
 									local_image_start = Math.abs(local_x);
-								} else if (local_x > size_x - bubble.getWidth()) {
-									local_width_with_boundry = ((int) size_x - local_x);
+								} else if (local_x > (int) Math.floor(size_x) - bubble.getWidth()) {
+									local_width_with_boundry = ((int) Math.floor(size_x) - local_x);
 								}
 
 								bubbles_pw.setPixels(local_x_with_boundry, local_y, local_width_with_boundry,

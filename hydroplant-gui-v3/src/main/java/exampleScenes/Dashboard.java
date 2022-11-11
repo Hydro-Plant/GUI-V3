@@ -137,7 +137,7 @@ public class Dashboard extends Scene {
 					case "VALUE/FLOW":
 						flow = Double.parseDouble(message.toString());
 						break;
-					case "VALUE/LEVLE":
+					case "VALUE/LEVEL":
 						level = Double.parseDouble(message.toString());
 						break;
 
@@ -184,7 +184,8 @@ public class Dashboard extends Scene {
 
 				@Override
 				public void connectionLost(Throwable cause) {
-
+					System.out.println("Dashboard connection lost");
+					System.out.println(cause.toString());
 				}
 
 				@Override

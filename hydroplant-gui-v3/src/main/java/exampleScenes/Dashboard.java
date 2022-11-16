@@ -1,11 +1,17 @@
 package exampleScenes;
 
+import java.util.ArrayList;
+
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import exampleLayouts.DashboardButton;
 import exampleLayouts.FlowButton;
@@ -34,6 +40,8 @@ public class Dashboard extends Scene {
 	double scene_factor = 1;
 	boolean scene_active = true;
 	boolean scene_change = false;
+	
+	Gson gson;
 
 	Button temp_btn; // Temperatur Button
 	TempButton temp_btn_layout;
@@ -101,6 +109,10 @@ public class Dashboard extends Scene {
 	boolean shitChanged = true;
 
 	public Dashboard() {
+		// Gson
+		gson = new GsonBuilder().setPrettyPrinting().create();
+		System.out.println("Dashboard Gson created");
+		
 		// Mqtt Startup
 
 		pers = new MemoryPersistence();
@@ -109,7 +121,7 @@ public class Dashboard extends Scene {
 			dashboard_client = new MqttClient("tcp://localhost:1883", "dashboard", pers);
 			dashboard_client.connect();
 			System.out.println("Dashboard-Client communication established");
-			dashboard_client.subscribe(new String[] { "value/temperature", "value/light", "value/lightStatus",
+			dashboard_client.subscribe(new String[] { "option/temperature", "value/temperature", "value/light", "value/lightStatus",
 					"value/ph", "value/ec", "value/flow", "value/level", "warning/temperature", "warning/light",
 					"warning/ph", "warning/ec", "warning/flow", "warning/level", "warningtext/temperature",
 					"warningtext/light", "warningtext/ph", "warningtext/ec", "warningtext/flow", "warningtext/level" });
@@ -119,6 +131,12 @@ public class Dashboard extends Scene {
 				@Override
 				public void messageArrived(String topic, MqttMessage message) throws Exception {
 					switch (topic.toUpperCase()) {
+					case "OPTION/TEMPERATURE":
+						ArrayList<Double> temp_options = gson.fromJson(new String(message.getPayload()), new TypeToken<ArrayList<Double>>() {
+								}.getType());
+						temp_btn_layout.setTemperatures(temp_options.get(0), temp_options.get(1), temp_options.get(3), temp_options.get(2));
+						break;
+					
 					case "VALUE/TEMPERATURE":
 						temp = Double.parseDouble(message.toString());
 						break;

@@ -20,6 +20,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TouchEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -27,6 +28,8 @@ import javafx.stage.Stage;
  * JavaFX App
  */
 public class App extends Application {
+	static final long touch_time = 500;
+
 	long last = 0;
 	boolean sizeUpdate = true;
 	boolean drag = false;
@@ -42,6 +45,8 @@ public class App extends Application {
 	Pane root = new Pane(); // Szene initialisieren
 
 	boolean calc_fr = true;
+
+	static long touch_start = 0;
 
 	@Override
 	public void start(Stage stage) {
@@ -93,6 +98,16 @@ public class App extends Application {
 			}
 		});
 
+		scene.setOnTouchPressed(new EventHandler<TouchEvent>() {
+
+			@Override
+			public void handle(TouchEvent event) {
+				sh.mousePressed(event.getTouchPoint().getSceneX(), event.getTouchPoint().getSceneY());
+				System.out.println("IS DES TATSCH");
+				touch_start = System.currentTimeMillis();
+			}
+		});
+
 		scene.setOnMouseReleased(new EventHandler<MouseEvent>() {
 
 			@Override
@@ -103,8 +118,22 @@ public class App extends Application {
 
 		});
 
+		scene.setOnTouchReleased(new EventHandler<TouchEvent>() {
+
+			@Override
+			public void handle(TouchEvent event) {
+				if (touch_start + touch_time >= System.currentTimeMillis()) {
+					sh.mouseClick(event.getTouchPoint().getSceneX(), event.getTouchPoint().getSceneY());
+					if (tb.mouseClick(event.getTouchPoint().getSceneX(), event.getTouchPoint().getSceneY()) == 0)
+						sh.externalButton(0);
+				}
+				sh.mouseReleased(event.getTouchPoint().getSceneX(), event.getTouchPoint().getSceneY());
+			}
+
+		});
+
 		scene.setOnMouseClicked(new EventHandler<MouseEvent>() { // Handles mouse
-																	// clicks
+																 // clicks
 			@Override
 			public void handle(MouseEvent event) {
 				// calc_fr = !calc_fr;
@@ -115,7 +144,7 @@ public class App extends Application {
 		});
 
 		scene.setOnMouseMoved(new EventHandler<MouseEvent>() { // Handles mouse
-																// movement
+																 // movement
 			@Override
 			public void handle(MouseEvent event) {
 				sh.mouseMoved(event.getSceneX(), event.getSceneY());
@@ -123,11 +152,18 @@ public class App extends Application {
 		});
 
 		scene.setOnMouseDragged(new EventHandler<MouseEvent>() { // Handles
-																	// mouse
+																 // mouse
 			// movement
 			@Override
 			public void handle(MouseEvent event) {
 				sh.mouseDragged(event.getSceneX(), event.getSceneY());
+			}
+		});
+
+		scene.setOnTouchMoved(new EventHandler<TouchEvent>() {
+			@Override
+			public void handle(TouchEvent event) {
+				sh.mouseDragged(event.getTouchPoint().getSceneX(), event.getTouchPoint().getSceneY());
 			}
 		});
 
@@ -202,7 +238,7 @@ public class App extends Application {
 
 	public static void main(String[] args) {
 		System.out.println("GUI started");
-		launch();
+		launch(args);
 	}
 
 }

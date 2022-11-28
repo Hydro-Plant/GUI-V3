@@ -139,6 +139,7 @@ public class WarningLayout extends Layout {
 	}
 
 	public double getHeight() {
+		updateShape();
 		return rec_y;
 	}
 

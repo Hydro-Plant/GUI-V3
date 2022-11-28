@@ -37,7 +37,7 @@ public class TimeLapseScene extends Scene {
 
 	private final double tll_width = 0.95;
 	private final double tll_height = 0.95;
-	private final double tll_height_factor = 0.4;
+	private final double tll_height_factor = 0.35;
 	private final double tll_gap_factor = 0.02;
 
 	final double scene_speed = 2;

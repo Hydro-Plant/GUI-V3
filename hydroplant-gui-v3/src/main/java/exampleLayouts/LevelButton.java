@@ -60,6 +60,11 @@ public class LevelButton extends DashboardButton {
 		updateWave();
 	}
 
+	public void setMaxLevel(double level) {
+		this.max_level = level;
+		updateWave();
+	}
+	
 	public void setShape(double obj_width, double obj_height) {
 		size_x = obj_width;
 		size_y = obj_height;
@@ -80,12 +85,11 @@ public class LevelButton extends DashboardButton {
 		wave_bottom = (int) Math.floor((size_y + wave_height * variables.height) * (max_level - level) / max_level
 				- wave_height * variables.height / 2) + (int) (wave_height * variables.height / 2);
 		wave_full_water.setHeight2(size_y - wave_bottom);
-		wave.setY2(wave_bottom - size_y - (wave_height * variables.height)
-				+ Positioning.positioning(positioning, 6)[1] * size_y);
+		wave.setY2(wave_full_water.getY());
 	}
 
 	public void update() {
-		beta = (beta + 1 / variables.frameRate * speed * (2 * Math.PI)) % (2 * Math.PI);
+		beta = (beta + speed * (2 * Math.PI) / variables.frameRate) % (2 * Math.PI);
 
 		wave_img = new WritableImage((int) Math.floor(size_x), (int) (wave_height * variables.height));
 		PixelWriter wave_pw = wave_img.getPixelWriter();

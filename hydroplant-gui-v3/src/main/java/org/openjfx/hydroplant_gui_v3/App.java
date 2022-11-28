@@ -1,7 +1,16 @@
 package org.openjfx.hydroplant_gui_v3;
 
+import java.applet.AudioClip;
+import java.io.File;
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 import exampleScenes.Dashboard;
 import exampleScenes.LightScene;
@@ -18,6 +27,7 @@ import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
+import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TouchEvent;
@@ -47,16 +57,30 @@ public class App extends Application {
 	boolean calc_fr = true;
 
 	static long touch_start = 0;
-
+	
+	Clip click_sound;
+	
 	@Override
 	public void start(Stage stage) {
 		var javaVersion = SystemInfo.javaVersion();
 		var javafxVersion = SystemInfo.javafxVersion();
-
+		
+		File audioFile = new File("sounds/click.wav");
+		try {
+			AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile);
+			click_sound = AudioSystem.getClip();
+			click_sound.open(audioInputStream);
+			click_sound.loop(0);
+		} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		variables.height = 768; // Temporäre Lösung
 		variables.width = 1366;
 
 		SceneHandler sh;
+	
 
 		tests = new TestScene();
 		SceneBundle tests_sb = new SceneBundle(tests);
@@ -136,6 +160,9 @@ public class App extends Application {
 																 // clicks
 			@Override
 			public void handle(MouseEvent event) {
+				if(click_sound != null) {
+					click_sound.start();
+				}
 				// calc_fr = !calc_fr;
 				sh.mouseClick(event.getSceneX(), event.getSceneY());
 				if (tb.mouseClick(event.getSceneX(), event.getSceneY()) == 0)
@@ -185,6 +212,8 @@ public class App extends Application {
 			}
 
 		});
+		
+		//scene.setCursor(Cursor.NONE);
 
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
@@ -199,7 +228,7 @@ public class App extends Application {
 		stage.setTitle("Hydroplant.virus.exe");
 		stage.show();
 
-		// stage.setFullScreen(true);
+		//stage.setFullScreen(true);
 
 		AnimationTimer at = new AnimationTimer() { // Animation Timer will execute once every frame
 			@Override

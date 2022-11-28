@@ -78,6 +78,7 @@ public class Warning extends Button {
 		if (pos_factor == 0) {
 			super.setPosition(posx, posy);
 		}
+		moving = true;
 	}
 
 	public void setSelectedPos(double posx, double posy) {
@@ -86,6 +87,7 @@ public class Warning extends Button {
 		if (pos_factor == 1) {
 			super.setPosition(posx, posy);
 		}
+		moving = true;
 	}
 
 	@Override

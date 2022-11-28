@@ -121,7 +121,7 @@ public class Dashboard extends Scene {
 			dashboard_client = new MqttClient("tcp://localhost:1883", "dashboard", pers);
 			dashboard_client.connect();
 			System.out.println("Dashboard-Client communication established");
-			dashboard_client.subscribe(new String[] { "option/temperature", "value/temperature", "value/light", "value/lightStatus",
+			dashboard_client.subscribe(new String[] { "option/temperature", "option/maxlevel", "value/temperature", "value/light", "value/lightStatus",
 					"value/ph", "value/ec", "value/flow", "value/level", "warning/temperature", "warning/light",
 					"warning/ph", "warning/ec", "warning/flow", "warning/level", "warningtext/temperature",
 					"warningtext/light", "warningtext/ph", "warningtext/ec", "warningtext/flow", "warningtext/level" });
@@ -136,7 +136,10 @@ public class Dashboard extends Scene {
 								}.getType());
 						temp_btn_layout.setTemperatures(temp_options.get(0), temp_options.get(1), temp_options.get(3), temp_options.get(2));
 						break;
-					
+					case "OPTION/MAXLEVEL":
+						level_btn_layout.setMaxLevel(Double.parseDouble(new String(message.getPayload())));
+						break;
+						
 					case "VALUE/TEMPERATURE":
 						temp = Double.parseDouble(message.toString());
 						break;

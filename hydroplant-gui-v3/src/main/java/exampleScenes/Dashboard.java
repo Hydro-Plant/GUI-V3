@@ -121,7 +121,7 @@ public class Dashboard extends Scene {
 			dashboard_client = new MqttClient("tcp://localhost:1883", "dashboard", pers);
 			dashboard_client.connect();
 			System.out.println("Dashboard-Client communication established");
-			dashboard_client.subscribe(new String[] { "option/temperature", "option/maxLevel", "value/temperature", "value/light", "value/lightStatus",
+			dashboard_client.subscribe(new String[] { "option/temperature", "option/maxLevel", "value/temperature", "value/light", "status/light",
 					"value/ph", "value/ec", "value/flow", "value/level", "warning/temperature", "warning/light",
 					"warning/ph", "warning/ec", "warning/flow", "warning/level", "warningtext/temperature",
 					"warningtext/light", "warningtext/ph", "warningtext/ec", "warningtext/flow", "warningtext/level" });
@@ -146,7 +146,7 @@ public class Dashboard extends Scene {
 					case "VALUE/LIGHT":
 						light = Double.parseDouble(message.toString());
 						break;
-					case "VALUE/LIGHTSTATUS":
+					case "STATUS/LIGHT":
 						lightStatus = Boolean.parseBoolean(message.toString());
 						break;
 					case "VALUE/PH":
@@ -219,14 +219,6 @@ public class Dashboard extends Scene {
 			System.out.println("Dashboard-Client failed!");
 			e.printStackTrace();
 		}
-		
-		try {
-			dashboard_client.publish("option/get", new MqttMessage("temperature".getBytes()));
-			dashboard_client.publish("option/get", new MqttMessage("maxLevel".getBytes()));
-		} catch (MqttException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
 		// Initialisierung der Objekte
 		temp_btn = new Button();
@@ -285,6 +277,15 @@ public class Dashboard extends Scene {
 		addObject(flow_warning);
 
 		updateShape();
+		
+		try {
+			dashboard_client.publish("option/get", new MqttMessage("temperature".getBytes()));
+			dashboard_client.publish("option/get", new MqttMessage("maxLevel".getBytes()));
+			dashboard_client.publish("status/get", new MqttMessage("light".getBytes()));
+		} catch (MqttException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	// ------ Scene activies

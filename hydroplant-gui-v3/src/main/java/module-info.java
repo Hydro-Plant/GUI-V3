@@ -11,8 +11,8 @@ module org.openjfx.hydroplant_gui_v3 {
 	exports timelapse;
 
 	requires com.google.gson;
+	requires java.desktop;
 	requires javafx.base;
 	requires javafx.graphics;
 	requires org.eclipse.paho.client.mqttv3;
-	requires java.desktop;
 }

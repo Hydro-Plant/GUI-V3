@@ -14,6 +14,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import exampleLayouts.DashboardButton;
+import exampleLayouts.ECTDSButton;
 import exampleLayouts.FlowButton;
 import exampleLayouts.LevelButton;
 import exampleLayouts.LightButton;
@@ -55,9 +56,9 @@ public class Dashboard extends Scene {
 	PHButton ph_btn_layout;
 	Warning ph_warning;
 
-	Button ec_btn; // EC Button
-	PHButton ec_btn_layout;
-	Warning ec_warning;
+	Button ec_tds_btn; // EC Button
+	ECTDSButton ec_tds_btn_layout;
+	Warning ec_tds_warning;
 
 	Button level_btn; // Level Button
 	LevelButton level_btn_layout;
@@ -89,13 +90,18 @@ public class Dashboard extends Scene {
 	double light = 0;
 	boolean lightStatus = false;
 	double ph = 0;
+	double ec = 0;
+	double tds = 0;
 	double flow = 0;
 	double level = 0;
 
+	String ec_or_tds = "ec";
+	
 	String temp_warning_text = "";
 	String light_warning_text = "";
 	String ph_warning_text = "";
 	String ec_warning_text = "";
+	String tds_warning_text = "";
 	String flow_warning_text = "";
 	String level_warning_text = "";
 
@@ -103,6 +109,7 @@ public class Dashboard extends Scene {
 	boolean light_warning_bool = false;
 	boolean ph_warning_bool = false;
 	boolean ec_warning_bool = false;
+	boolean tds_warning_bool = false;
 	boolean flow_warning_bool = false;
 	boolean level_warning_bool = false;
 
@@ -121,10 +128,10 @@ public class Dashboard extends Scene {
 			dashboard_client = new MqttClient("tcp://localhost:1883", "dashboard", pers);
 			dashboard_client.connect();
 			System.out.println("Dashboard-Client communication established");
-			dashboard_client.subscribe(new String[] { "option/temperature", "option/maxLevel", "value/temperature", "value/light", "status/light",
-					"value/ph", "value/ec", "value/flow", "value/level", "warning/temperature", "warning/light",
-					"warning/ph", "warning/ec", "warning/flow", "warning/level", "warningtext/temperature",
-					"warningtext/light", "warningtext/ph", "warningtext/ec", "warningtext/flow", "warningtext/level" });
+			dashboard_client.subscribe(new String[] { "option/temperature", "option/level", "option/ec_or_tds", "value/temperature", "value/light", "status/light",
+					"value/ph", "value/ec", "value/tds", "value/flow", "value/level", "warning/temperature", "warning/light",
+					"warning/ph", "warning/ec", "warning/tds", "warning/flow", "warning/level", "warningtext/temperature",
+					"warningtext/light", "warningtext/ph", "warningtext/ec", "warningtext/tds", "warningtext/flow", "warningtext/level" });
 
 			System.out.println("Dashboard-Client subscriptions completed");
 			dashboard_client.setCallback(new MqttCallback() {
@@ -136,8 +143,18 @@ public class Dashboard extends Scene {
 								}.getType());
 						temp_btn_layout.setTemperatures(temp_options.get(0), temp_options.get(1), temp_options.get(3), temp_options.get(2));
 						break;
-					case "OPTION/MAXLEVEL":
-						level_btn_layout.setMaxLevel(Double.parseDouble(new String(message.getPayload())));
+					case "OPTION/LEVEL":
+						ArrayList<Double> level_options = gson.fromJson(new String(message.getPayload()), new TypeToken<ArrayList<Double>>() {
+						}.getType());
+						level_btn_layout.setMaxLevel(level_options.get(0));
+						break;
+					case "OPTION/EC_OR_TDS":
+						ec_or_tds = message.toString();
+						if(ec_or_tds == "ec") ec_tds_warning.setActive(ec_warning_bool);
+						else ec_tds_warning.setActive(tds_warning_bool);
+						if(ec_or_tds == "ec") ec_tds_warning.setText(ec_warning_text);
+						else ec_tds_warning.setText(tds_warning_text);
+						ec_tds_btn_layout.setECorTDS(message.toString());
 						break;
 						
 					case "VALUE/TEMPERATURE":
@@ -152,8 +169,11 @@ public class Dashboard extends Scene {
 					case "VALUE/PH":
 						ph = Double.parseDouble(message.toString());
 						break;
+					case "VALUE/TDS":
+						tds = (double)Double.parseDouble(message.toString());
+						break;
 					case "VALUE/EC":
-						// ec = (double)Double.parseDouble(message.toString());
+						ec = (double)Double.parseDouble(message.toString());
 						break;
 					case "VALUE/FLOW":
 						flow = Double.parseDouble(message.toString());
@@ -170,6 +190,9 @@ public class Dashboard extends Scene {
 						break;
 					case "WARNING/PH":
 						ph_warning_bool = Boolean.parseBoolean(message.toString());
+						break;
+					case "WARNING/TDS":
+						tds_warning_bool = Boolean.parseBoolean(message.toString());
 						break;
 					case "WARNING/EC":
 						ec_warning_bool = Boolean.parseBoolean(message.toString());
@@ -189,6 +212,9 @@ public class Dashboard extends Scene {
 						break;
 					case "WARNINGTEXT/PH":
 						ph_warning_text = message.toString();
+						break;
+					case "WARNINGTEXT/TDS":
+						tds_warning_text = message.toString();
 						break;
 					case "WARNINGTEXT/EC":
 						ec_warning_text = message.toString();
@@ -233,9 +259,9 @@ public class Dashboard extends Scene {
 		ph_btn_layout = new PHButton();
 		ph_warning = new Warning();
 
-		ec_btn = new Button();
-		ec_btn_layout = new PHButton();
-		ec_warning = new Warning();
+		ec_tds_btn = new Button();
+		ec_tds_btn_layout = new ECTDSButton();
+		ec_tds_warning = new Warning();
 
 		level_btn = new Button();
 		level_btn_layout = new LevelButton();
@@ -252,27 +278,27 @@ public class Dashboard extends Scene {
 		temp_btn.setDesign(temp_btn_layout);
 		light_btn.setDesign(light_btn_layout);
 		ph_btn.setDesign(ph_btn_layout);
-		ec_btn.setDesign(ec_btn_layout);
+		ec_tds_btn.setDesign(ec_tds_btn_layout);
 		flow_btn.setDesign(flow_btn_layout);
 		level_btn.setDesign(level_btn_layout);
 
-		buttons = new Button[] { temp_btn, light_btn, ph_btn, ec_btn, flow_btn, level_btn };
-		button_layouts = new DashboardButton[] { temp_btn_layout, light_btn_layout, ph_btn_layout, ec_btn_layout,
+		buttons = new Button[] { temp_btn, light_btn, ph_btn, ec_tds_btn, flow_btn, level_btn };
+		button_layouts = new DashboardButton[] { temp_btn_layout, light_btn_layout, ph_btn_layout, ec_tds_btn_layout,
 				flow_btn_layout, level_btn_layout };
 
-		warnings = new Warning[] { temp_warning, light_warning, ph_warning, ec_warning, flow_warning, level_warning };
+		warnings = new Warning[] { temp_warning, light_warning, ph_warning, ec_tds_warning, flow_warning, level_warning };
 
 		addObject(temp_btn);
 		addObject(light_btn);
 		addObject(ph_btn);
-		addObject(ec_btn);
+		addObject(ec_tds_btn);
 		addObject(level_btn);
 		addObject(flow_btn);
 
 		addObject(temp_warning);
 		addObject(light_warning);
 		addObject(ph_warning);
-		addObject(ec_warning);
+		addObject(ec_tds_warning);
 		addObject(level_warning);
 		addObject(flow_warning);
 
@@ -449,16 +475,16 @@ public class Dashboard extends Scene {
 
 		// EC Button
 
-		ec_btn.setPosition(variables.width / 2,
+		ec_tds_btn.setPosition(variables.width / 2,
 				(int) (variables.height * (1 - (1 - constants.height_perc) * constants.edge_distance)), 7);
-		ec_btn.setShape(btn_width, btn_height);
+		ec_tds_btn.setShape(btn_width, btn_height);
 
-		ec_btn_layout.setVirtualShape(btn_width, btn_height, 7);
-		ec_btn_layout.setStrokeWidth(constants.height_outline * variables.height);
+		ec_tds_btn_layout.setVirtualShape(btn_width, btn_height, 7);
+		ec_tds_btn_layout.setStrokeWidth(constants.height_outline * variables.height);
 
-		ec_warning.setOrigin(
-				ec_btn.getPosition()[0] + (Positioning.positioning(7, 6)[0] + warning_pos_factor) * btn_width,
-				ec_btn.getPosition()[1] + (Positioning.positioning(7, 6)[1] - warning_pos_factor) * btn_height);
+		ec_tds_warning.setOrigin(
+				ec_tds_btn.getPosition()[0] + (Positioning.positioning(7, 6)[0] + warning_pos_factor) * btn_width,
+				ec_tds_btn.getPosition()[1] + (Positioning.positioning(7, 6)[1] - warning_pos_factor) * btn_height);
 
 		// Level Button
 
@@ -496,7 +522,7 @@ public class Dashboard extends Scene {
 				variables.height * (constants.height_perc + (1 - constants.height_perc) / 2));
 		ph_warning.setSelectedPos((warning_width_factor + (1 - warning_width_factor) / 2) * variables.width,
 				variables.height * (constants.height_perc + (1 - constants.height_perc) / 2));
-		ec_warning.setSelectedPos((warning_width_factor + (1 - warning_width_factor) / 2) * variables.width,
+		ec_tds_warning.setSelectedPos((warning_width_factor + (1 - warning_width_factor) / 2) * variables.width,
 				variables.height * (constants.height_perc + (1 - constants.height_perc) / 2));
 		level_warning.setSelectedPos((warning_width_factor + (1 - warning_width_factor) / 2) * variables.width,
 				variables.height * (constants.height_perc + (1 - constants.height_perc) / 2));
@@ -506,21 +532,21 @@ public class Dashboard extends Scene {
 		temp_warning.setSize(warning_size_factor * variables.height);
 		light_warning.setSize(warning_size_factor * variables.height);
 		ph_warning.setSize(warning_size_factor * variables.height);
-		ec_warning.setSize(warning_size_factor * variables.height);
+		ec_tds_warning.setSize(warning_size_factor * variables.height);
 		level_warning.setSize(warning_size_factor * variables.height);
 		flow_warning.setSize(warning_size_factor * variables.height);
 
 		temp_warning.setOutline(constants.height_outline * variables.height);
 		light_warning.setOutline(constants.height_outline * variables.height);
 		ph_warning.setOutline(constants.height_outline * variables.height);
-		ec_warning.setOutline(constants.height_outline * variables.height);
+		ec_tds_warning.setOutline(constants.height_outline * variables.height);
 		level_warning.setOutline(constants.height_outline * variables.height);
 		flow_warning.setOutline(constants.height_outline * variables.height);
 
 		temp_warning.setRectangle(warning_width_factor * variables.width);
 		light_warning.setRectangle(warning_width_factor * variables.width);
 		ph_warning.setRectangle(warning_width_factor * variables.width);
-		ec_warning.setRectangle(warning_width_factor * variables.width);
+		ec_tds_warning.setRectangle(warning_width_factor * variables.width);
 		level_warning.setRectangle(warning_width_factor * variables.width);
 		flow_warning.setRectangle(warning_width_factor * variables.width);
 	}
@@ -535,21 +561,24 @@ public class Dashboard extends Scene {
 			light_btn_layout.setStatus(lightStatus);
 			light_btn_layout.setValue(light);
 			ph_btn_layout.setValue(ph);
-			// ec_btn_layout.setValue(ec);
+			ec_tds_btn_layout.setEC(ec);
+			ec_tds_btn_layout.setTDS(tds);
 			flow_btn_layout.setValue(flow);
 			level_btn_layout.setLevel(level);
 
 			temp_warning.setActive(temp_warning_bool);
 			light_warning.setActive(light_warning_bool);
 			ph_warning.setActive(ph_warning_bool);
-			ec_warning.setActive(ec_warning_bool);
+			if(ec_or_tds == "ec") ec_tds_warning.setActive(ec_warning_bool);
+			else ec_tds_warning.setActive(tds_warning_bool);
 			flow_warning.setActive(flow_warning_bool);
 			level_warning.setActive(level_warning_bool);
 
 			temp_warning.setText(temp_warning_text);
 			light_warning.setText(light_warning_text);
 			ph_warning.setText(ph_warning_text);
-			ec_warning.setText(ec_warning_text);
+			if(ec_or_tds == "ec") ec_tds_warning.setText(ec_warning_text);
+			else ec_tds_warning.setText(tds_warning_text);
 			flow_warning.setText(flow_warning_text);
 			level_warning.setText(level_warning_text);
 

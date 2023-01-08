@@ -2,8 +2,12 @@ package exampleScenes;
 
 import java.util.ArrayList;
 
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.eclipse.paho.client.mqttv3.MqttAsyncClient;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -61,12 +65,16 @@ public class TimeLapseScene extends Scene {
 	Rectangle2 scroll_clip;
 	MiniScene scroll;
 
-	MqttClient timelapse_client;
+	MqttAsyncClient timelapse_client;
 	MemoryPersistence pers;
 
 	ArrayList<TimeLapse> data_tl;
 	boolean newData = false;
-
+	
+	private static void startMqttServer() {
+		
+	}
+	
 	public TimeLapseScene() {
 
 		// Mqtt Startup
@@ -74,44 +82,65 @@ public class TimeLapseScene extends Scene {
 		pers = new MemoryPersistence();
 
 		try {
-			timelapse_client = new MqttClient("tcp://localhost:1883", "timelapse", pers);
-			timelapse_client.connect();
-			System.out.println("Timelapse-Client communication established");
-			timelapse_client.subscribe(new String[] { "timelapse/data" });
-
-			System.out.println("Timelapse-Client subscriptions completed");
-			timelapse_client.setCallback(new MqttCallback() {
+			timelapse_client = new MqttAsyncClient("tcp://localhost:1883", "timelapse", pers);
+			timelapse_client.connect(null, null, new IMqttActionListener() {
 				@Override
-				public void messageArrived(String topic, MqttMessage message) throws Exception {
-					switch (topic.toUpperCase()) {
-					case "TIMELAPSE/DATA":
-						Gson gson = new GsonBuilder().setPrettyPrinting().create();
-						ArrayList<TimeLapseData> data = gson.fromJson(message.toString(),
-								new TypeToken<ArrayList<TimeLapseData>>() {
-								}.getType());
-						data_tl = new ArrayList<>();
+				public void onSuccess(IMqttToken asyncActionToken) {
+					System.out.println("Timelapse-Client communication established");
+					try {
+						timelapse_client.subscribe("timelapse/data", 2);
+					} catch (MqttException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					System.out.println("Timelapse-Client subscriptions completed");
+					timelapse_client.setCallback(new MqttCallback() {
+						@Override
+						public void messageArrived(String topic, MqttMessage message) throws Exception {
+							switch (topic.toUpperCase()) {
+							case "TIMELAPSE/DATA":
+								Gson gson = new GsonBuilder().setPrettyPrinting().create();
+								ArrayList<TimeLapseData> data = gson.fromJson(message.toString(),
+										new TypeToken<ArrayList<TimeLapseData>>() {
+										}.getType());
+								data_tl = new ArrayList<>();
 
-						for (int x = 0; x < data.size(); x++) {
-							data_tl.add(TimeLapse.fromData(data.get(x)));
+								for (int x = 0; x < data.size(); x++) {
+									data_tl.add(TimeLapse.fromData(data.get(x)));
+								}
+
+								newData = true;
+
+								break;
+							}
 						}
 
-						newData = true;
+						@Override
+						public void connectionLost(Throwable cause) {
 
-						break;
+						}
+
+						@Override
+						public void deliveryComplete(IMqttDeliveryToken token) {
+
+						}
+					});
+					System.out.println("Timelapse-Client callback set");
+					try {
+						timelapse_client.publish("timelapse/get", new MqttMessage("true".getBytes()));
+					} catch (MqttException e) {
+						System.out.println("Could not get timelapse");
+						e.printStackTrace();
 					}
-				}
-
-				@Override
-				public void connectionLost(Throwable cause) {
 
 				}
 
 				@Override
-				public void deliveryComplete(IMqttDeliveryToken token) {
-
+				public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+					
 				}
 			});
-			System.out.println("Timelapse-Client callback set");
+			
 		} catch (MqttException e) {
 			System.out.println("Timelapse-Client failed!");
 			e.printStackTrace();
@@ -125,13 +154,6 @@ public class TimeLapseScene extends Scene {
 		tll = new TimeLapseList();
 		tll.setPos(0);
 		tll.getPane().setEffect(ca);
-
-		try {
-			timelapse_client.publish("timelapse/get", new MqttMessage("true".getBytes()));
-		} catch (MqttException e) {
-			System.out.println("Could not get timelapse");
-			e.printStackTrace();
-		}
 
 		ntl = new NewTimeLapse();
 		ntl.setPos(1);

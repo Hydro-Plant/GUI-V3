@@ -26,6 +26,7 @@ public class TextButton extends Button {
 		tbl.setOutline(outline_width);
 	}
 
+	@Override
 	public void setShape(double sizex, double sizey) {
 		super.setShape(sizex, sizey);
 		tbl.setShape(sizex, sizey);

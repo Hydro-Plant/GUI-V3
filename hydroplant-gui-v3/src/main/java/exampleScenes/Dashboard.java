@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
@@ -41,7 +42,7 @@ public class Dashboard extends Scene {
 	double scene_factor = 1;
 	boolean scene_active = true;
 	boolean scene_change = false;
-	
+
 	Gson gson;
 
 	Button temp_btn; // Temperatur Button
@@ -96,7 +97,8 @@ public class Dashboard extends Scene {
 	double level = 0;
 
 	String ec_or_tds = "ec";
-	
+	String last_ec_or_tds = "ec";
+
 	String temp_warning_text = "";
 	String light_warning_text = "";
 	String ph_warning_text = "";
@@ -115,23 +117,70 @@ public class Dashboard extends Scene {
 
 	boolean shitChanged = true;
 
+
+
+
 	public Dashboard() {
+		// Initialisierung der Objekte
+
+		temp_btn = new Button();
+		temp_btn_layout = new TempButton();
+		temp_warning = new Warning();
+
+		light_btn = new Button();
+		light_btn_layout = new LightButton();
+		light_warning = new Warning();
+
+		ph_btn = new Button();
+		ph_btn_layout = new PHButton();
+		ph_warning = new Warning();
+
+		ec_tds_btn = new Button();
+		ec_tds_btn_layout = new ECTDSButton();
+		ec_tds_warning = new Warning();
+
+		level_btn = new Button();
+		level_btn_layout = new LevelButton();
+		level_warning = new Warning();
+
+		flow_btn = new Button();
+		flow_btn_layout = new FlowButton();
+		flow_warning = new Warning();
+
+		// Objektparameter werden gesetzt
+		temp_btn_layout.setTemperatures(17, 21, 25, 1);
+		temp_btn_layout.setTemperature(21);
+
+		temp_btn.setDesign(temp_btn_layout);
+		light_btn.setDesign(light_btn_layout);
+		ph_btn.setDesign(ph_btn_layout);
+		ec_tds_btn.setDesign(ec_tds_btn_layout);
+		flow_btn.setDesign(flow_btn_layout);
+		level_btn.setDesign(level_btn_layout);
+
 		// Gson
 		gson = new GsonBuilder().setPrettyPrinting().create();
 		System.out.println("Dashboard Gson created");
-		
+
 		// Mqtt Startup
 
 		pers = new MemoryPersistence();
 
 		try {
+			MqttConnectOptions mqtt_opt = new MqttConnectOptions();
+			mqtt_opt.setMaxInflight(1000);
 			dashboard_client = new MqttClient("tcp://localhost:1883", "dashboard", pers);
-			dashboard_client.connect();
+			dashboard_client.connect(mqtt_opt);
 			System.out.println("Dashboard-Client communication established");
-			dashboard_client.subscribe(new String[] { "option/temperature", "option/level", "option/ec_or_tds", "value/temperature", "value/light", "status/light",
-					"value/ph", "value/ec", "value/tds", "value/flow", "value/level", "warning/temperature", "warning/light",
-					"warning/ph", "warning/ec", "warning/tds", "warning/flow", "warning/level", "warningtext/temperature",
-					"warningtext/light", "warningtext/ph", "warningtext/ec", "warningtext/tds", "warningtext/flow", "warningtext/level" });
+			try {
+				dashboard_client.subscribe(new String[] { "option/temperature", "option/level", "option/ec_or_tds", "value/temperature", "value/light", "status/light",
+						"value/ph", "value/ec", "value/tds", "value/flow", "value/level", "warning/temperature", "warning/light",
+						"warning/ph", "warning/ec", "warning/tds", "warning/flow", "warning/level", "warningtext/temperature",
+						"warningtext/light", "warningtext/ph", "warningtext/ec", "warningtext/tds", "warningtext/flow", "warningtext/level" }, new int[] {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2});
+			} catch (MqttException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 			System.out.println("Dashboard-Client subscriptions completed");
 			dashboard_client.setCallback(new MqttCallback() {
@@ -149,14 +198,14 @@ public class Dashboard extends Scene {
 						level_btn_layout.setMaxLevel(level_options.get(0));
 						break;
 					case "OPTION/EC_OR_TDS":
-						ec_or_tds = message.toString();
-						if(ec_or_tds == "ec") ec_tds_warning.setActive(ec_warning_bool);
+						ec_or_tds = message.toString().strip();
+						if(ec_or_tds.equals("ec")) ec_tds_warning.setActive(ec_warning_bool);
 						else ec_tds_warning.setActive(tds_warning_bool);
-						if(ec_or_tds == "ec") ec_tds_warning.setText(ec_warning_text);
+						if(ec_or_tds.equals("ec")) ec_tds_warning.setText(ec_warning_text);
 						else ec_tds_warning.setText(tds_warning_text);
 						ec_tds_btn_layout.setECorTDS(message.toString());
 						break;
-						
+
 					case "VALUE/TEMPERATURE":
 						temp = Double.parseDouble(message.toString());
 						break;
@@ -170,10 +219,12 @@ public class Dashboard extends Scene {
 						ph = Double.parseDouble(message.toString());
 						break;
 					case "VALUE/TDS":
-						tds = (double)Double.parseDouble(message.toString());
+						last_ec_or_tds = "tds";
+						tds = Double.parseDouble(message.toString());
 						break;
 					case "VALUE/EC":
-						ec = (double)Double.parseDouble(message.toString());
+						last_ec_or_tds = "ec";
+						ec = Double.parseDouble(message.toString());
 						break;
 					case "VALUE/FLOW":
 						flow = Double.parseDouble(message.toString());
@@ -246,42 +297,6 @@ public class Dashboard extends Scene {
 			e.printStackTrace();
 		}
 
-		// Initialisierung der Objekte
-		temp_btn = new Button();
-		temp_btn_layout = new TempButton();
-		temp_warning = new Warning();
-
-		light_btn = new Button();
-		light_btn_layout = new LightButton();
-		light_warning = new Warning();
-
-		ph_btn = new Button();
-		ph_btn_layout = new PHButton();
-		ph_warning = new Warning();
-
-		ec_tds_btn = new Button();
-		ec_tds_btn_layout = new ECTDSButton();
-		ec_tds_warning = new Warning();
-
-		level_btn = new Button();
-		level_btn_layout = new LevelButton();
-		level_warning = new Warning();
-
-		flow_btn = new Button();
-		flow_btn_layout = new FlowButton();
-		flow_warning = new Warning();
-
-		// Objektparameter werden gesetzt
-		temp_btn_layout.setTemperatures(17, 21, 25, 1);
-		temp_btn_layout.setTemperature(21);
-
-		temp_btn.setDesign(temp_btn_layout);
-		light_btn.setDesign(light_btn_layout);
-		ph_btn.setDesign(ph_btn_layout);
-		ec_tds_btn.setDesign(ec_tds_btn_layout);
-		flow_btn.setDesign(flow_btn_layout);
-		level_btn.setDesign(level_btn_layout);
-
 		buttons = new Button[] { temp_btn, light_btn, ph_btn, ec_tds_btn, flow_btn, level_btn };
 		button_layouts = new DashboardButton[] { temp_btn_layout, light_btn_layout, ph_btn_layout, ec_tds_btn_layout,
 				flow_btn_layout, level_btn_layout };
@@ -303,7 +318,7 @@ public class Dashboard extends Scene {
 		addObject(flow_warning);
 
 		updateShape();
-		
+
 		try {
 			dashboard_client.publish("option/get", new MqttMessage("temperature".getBytes()));
 			dashboard_client.publish("option/get", new MqttMessage("maxLevel".getBytes()));
@@ -561,15 +576,15 @@ public class Dashboard extends Scene {
 			light_btn_layout.setStatus(lightStatus);
 			light_btn_layout.setValue(light);
 			ph_btn_layout.setValue(ph);
-			ec_tds_btn_layout.setEC(ec);
-			ec_tds_btn_layout.setTDS(tds);
+			if(last_ec_or_tds.equals("ec")) ec_tds_btn_layout.setEC(ec);
+			else ec_tds_btn_layout.setTDS(tds);
 			flow_btn_layout.setValue(flow);
 			level_btn_layout.setLevel(level);
 
 			temp_warning.setActive(temp_warning_bool);
 			light_warning.setActive(light_warning_bool);
 			ph_warning.setActive(ph_warning_bool);
-			if(ec_or_tds == "ec") ec_tds_warning.setActive(ec_warning_bool);
+			if(ec_or_tds.equals("ec")) ec_tds_warning.setActive(ec_warning_bool);
 			else ec_tds_warning.setActive(tds_warning_bool);
 			flow_warning.setActive(flow_warning_bool);
 			level_warning.setActive(level_warning_bool);
@@ -577,7 +592,7 @@ public class Dashboard extends Scene {
 			temp_warning.setText(temp_warning_text);
 			light_warning.setText(light_warning_text);
 			ph_warning.setText(ph_warning_text);
-			if(ec_or_tds == "ec") ec_tds_warning.setText(ec_warning_text);
+			if(ec_or_tds.equals("ec")) ec_tds_warning.setText(ec_warning_text);
 			else ec_tds_warning.setText(tds_warning_text);
 			flow_warning.setText(flow_warning_text);
 			level_warning.setText(level_warning_text);

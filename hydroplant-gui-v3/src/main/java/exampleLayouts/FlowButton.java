@@ -84,6 +84,7 @@ public class FlowButton extends DashboardButton {
 		}
 	}
 
+	@Override
 	public void setShape(double obj_width, double obj_height) {
 		size_x = obj_width;
 		size_y = obj_height;
@@ -92,6 +93,7 @@ public class FlowButton extends DashboardButton {
 		super.setShape(obj_width, obj_height);
 	}
 
+	@Override
 	public void setVirtualShape(double obj_width, double obj_height, int positioning) {
 		bubbles.setPos(positioning);
 		if (this.virt_sizey != obj_height || this.virt_sizex != obj_width) {
@@ -106,6 +108,7 @@ public class FlowButton extends DashboardButton {
 		super.setVirtualShape(obj_width, obj_height, positioning);
 	}
 
+	@Override
 	public void update() {
 		double time_passed = 1 / variables.frameRate;
 		double[] pos_shift = Positioning.positioning(positioning, 4);

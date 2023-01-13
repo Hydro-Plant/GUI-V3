@@ -64,7 +64,8 @@ public class LevelButton extends DashboardButton {
 		this.max_level = level;
 		updateWave();
 	}
-	
+
+	@Override
 	public void setShape(double obj_width, double obj_height) {
 		size_x = obj_width;
 		size_y = obj_height;
@@ -88,6 +89,7 @@ public class LevelButton extends DashboardButton {
 		wave.setY2(wave_full_water.getY());
 	}
 
+	@Override
 	public void update() {
 		beta = (beta + speed * (2 * Math.PI) / variables.frameRate) % (2 * Math.PI);
 

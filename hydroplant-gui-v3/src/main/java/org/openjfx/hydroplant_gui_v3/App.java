@@ -1,8 +1,8 @@
 package org.openjfx.hydroplant_gui_v3;
 
-import java.applet.AudioClip;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -11,6 +11,19 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
+
+import org.controlsfx.control.Notifications;
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import exampleScenes.Dashboard;
 import exampleScenes.LightScene;
@@ -27,7 +40,6 @@ import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
-import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TouchEvent;
@@ -55,16 +67,19 @@ public class App extends Application {
 	Pane root = new Pane(); // Szene initialisieren
 
 	boolean calc_fr = true;
-
 	static long touch_start = 0;
-	
 	Clip click_sound;
+
+	MemoryPersistence pers;
+	MqttClient gui_client;
+	
+	ArrayList<ArrayList<String>> notification_list = new ArrayList<ArrayList<String>>();
 	
 	@Override
 	public void start(Stage stage) {
 		var javaVersion = SystemInfo.javaVersion();
 		var javafxVersion = SystemInfo.javafxVersion();
-		
+
 		File audioFile = new File("sounds/click.wav");
 		try {
 			AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile);
@@ -75,12 +90,49 @@ public class App extends Application {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
+		MqttConnectOptions mqtt_opt = new MqttConnectOptions();
+		mqtt_opt.setMaxInflight(1000);
+		try {
+			gui_client = new MqttClient("tcp://localhost:1883", "gui", pers);
+			gui_client.connect(mqtt_opt);
+			System.out.println("GUI-Client communication established");
+			gui_client.subscribe(new String[] { "gui/notification" });
+			gui_client.setCallback(new MqttCallback() {
+				@Override
+				public void messageArrived(String topic, MqttMessage message) throws Exception {
+					switch (topic.toUpperCase()) {
+					case "GUI/NOTIFICATION":
+						Gson gson = new GsonBuilder().setPrettyPrinting().create();
+						ArrayList<String> data = gson.fromJson(message.toString(),
+								new TypeToken<ArrayList<String>>() {
+								}.getType());
+						notification_list.add(data);
+						break;
+					}
+				}
+
+				@Override
+				public void connectionLost(Throwable cause) {
+					System.out.println("GUI-Mqtt connection lost");
+					System.out.println(cause.getCause().toString());
+				}
+
+				@Override
+				public void deliveryComplete(IMqttDeliveryToken token) {
+
+				}
+			});
+		} catch (MqttException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		variables.height = 768; // Temporäre Lösung
 		variables.width = 1366;
 
 		SceneHandler sh;
-	
+
 
 		tests = new TestScene();
 		SceneBundle tests_sb = new SceneBundle(tests);
@@ -212,7 +264,7 @@ public class App extends Application {
 			}
 
 		});
-		
+
 		//scene.setCursor(Cursor.NONE);
 
 		Timer timer = new Timer();
@@ -228,7 +280,7 @@ public class App extends Application {
 		stage.setTitle("Hydroplant.virus.exe");
 		stage.show();
 
-		//stage.setFullScreen(true);
+		stage.setFullScreen(true);
 
 		AnimationTimer at = new AnimationTimer() { // Animation Timer will execute once every frame
 			@Override
@@ -259,6 +311,11 @@ public class App extends Application {
 					root.getChildren().set(0, sh.getActive().root);
 				}
 				last = now;
+				
+				for(int x = 0; x < notification_list.size(); x++) {
+					Notifications.create().title(notification_list.get(0).get(0)).text(notification_list.get(0).get(1)).showInformation();
+					notification_list.remove(0);
+				}
 			}
 		};
 

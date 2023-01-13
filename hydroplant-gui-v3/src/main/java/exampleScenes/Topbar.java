@@ -75,6 +75,7 @@ public class Topbar extends Scene {
 		bs.setSize(variables.height * constants.battery_s_size);
 		bs.setPosition((int) (variables.height * constants.battery_s_pos),
 				(int) (variables.height * constants.height_perc / 2));
+		bs.getPane().setOpacity(0);
 	}
 
 	public void setBat(int bat_perc) {

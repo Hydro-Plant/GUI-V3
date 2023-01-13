@@ -14,5 +14,6 @@ module org.openjfx.hydroplant_gui_v3 {
 	requires java.desktop;
 	requires javafx.base;
 	requires javafx.graphics;
+	requires org.controlsfx.controls;
 	requires org.eclipse.paho.client.mqttv3;
 }

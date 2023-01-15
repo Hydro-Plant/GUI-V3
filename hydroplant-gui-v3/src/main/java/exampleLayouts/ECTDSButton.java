@@ -3,8 +3,8 @@ package exampleLayouts;
 import javafx.scene.paint.Color;
 
 public class ECTDSButton extends DashboardButton {
-	Color c_optimal = Color.rgb(219, 255, 223);
-	Color c_suboptimal = Color.rgb(255, 50, 50);
+	Color c_optimal = Color.rgb(145, 255, 147);
+	Color c_suboptimal = Color.rgb(219, 255, 223);
 
 	double t_optimal = 0;
 	double t_tol = 0;
@@ -100,7 +100,7 @@ public class ECTDSButton extends DashboardButton {
 		}
 	}
 
-	public void setTDSs(double min, double opt, double max, double tol) {
+	public void setTDSs(double min, double opt, double tol, double max) {
 		this.t_optimal = opt;
 		this.t_min = min;
 		this.t_max = max;
@@ -112,7 +112,7 @@ public class ECTDSButton extends DashboardButton {
 		this.e_tol = tol * 2; // Toleranz des optimalen Wasser EC-Werts +-
 	}
 
-	public void setECs(double min, double opt, double max, double tol) {
+	public void setECs(double min, double opt, double tol, double max) {
 		this.e_optimal = opt * 1000;
 		this.e_min = min * 1000;
 		this.e_max = max * 1000;

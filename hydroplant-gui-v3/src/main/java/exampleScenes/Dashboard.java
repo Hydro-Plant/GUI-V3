@@ -117,9 +117,6 @@ public class Dashboard extends Scene {
 
 	boolean shitChanged = true;
 
-
-
-
 	public Dashboard() {
 		// Initialisierung der Objekte
 
@@ -168,15 +165,15 @@ public class Dashboard extends Scene {
 
 		try {
 			MqttConnectOptions mqtt_opt = new MqttConnectOptions();
-			mqtt_opt.setMaxInflight(1000);
+			mqtt_opt.setMaxInflight(100);
 			dashboard_client = new MqttClient("tcp://localhost:1883", "dashboard", pers);
 			dashboard_client.connect(mqtt_opt);
 			System.out.println("Dashboard-Client communication established");
 			try {
-				dashboard_client.subscribe(new String[] { "option/temperature", "option/level", "option/ec_or_tds", "value/temperature", "value/light", "status/light",
+				dashboard_client.subscribe(new String[] { "option/temperature", "option/ec", "option/tds", "option/level", "option/ec_or_tds", "value/temperature", "value/light", "status/light",
 						"value/ph", "value/ec", "value/tds", "value/flow", "value/level", "warning/temperature", "warning/light",
 						"warning/ph", "warning/ec", "warning/tds", "warning/flow", "warning/level", "warningtext/temperature",
-						"warningtext/light", "warningtext/ph", "warningtext/ec", "warningtext/tds", "warningtext/flow", "warningtext/level" }, new int[] {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2});
+						"warningtext/light", "warningtext/ph", "warningtext/ec", "warningtext/tds", "warningtext/flow", "warningtext/level" }, new int[] {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2});
 			} catch (MqttException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -191,6 +188,16 @@ public class Dashboard extends Scene {
 						ArrayList<Double> temp_options = gson.fromJson(new String(message.getPayload()), new TypeToken<ArrayList<Double>>() {
 								}.getType());
 						temp_btn_layout.setTemperatures(temp_options.get(0), temp_options.get(1), temp_options.get(3), temp_options.get(2));
+						break;
+					case "OPTION/EC":
+						ArrayList<Double> ec_options = gson.fromJson(new String(message.getPayload()), new TypeToken<ArrayList<Double>>() {
+						}.getType());
+						ec_tds_btn_layout.setECs(ec_options.get(0), ec_options.get(1), ec_options.get(2), ec_options.get(3));
+						break;
+					case "OPTION/TDS":
+						ArrayList<Double> tds_options = gson.fromJson(new String(message.getPayload()), new TypeToken<ArrayList<Double>>() {
+						}.getType());
+						ec_tds_btn_layout.setTDSs(tds_options.get(0), tds_options.get(1), tds_options.get(2), tds_options.get(3));
 						break;
 					case "OPTION/LEVEL":
 						ArrayList<Double> level_options = gson.fromJson(new String(message.getPayload()), new TypeToken<ArrayList<Double>>() {
@@ -321,7 +328,9 @@ public class Dashboard extends Scene {
 
 		try {
 			dashboard_client.publish("option/get", new MqttMessage("temperature".getBytes()));
-			dashboard_client.publish("option/get", new MqttMessage("maxLevel".getBytes()));
+			dashboard_client.publish("option/get", new MqttMessage("level".getBytes()));
+			dashboard_client.publish("option/get", new MqttMessage("ec".getBytes()));
+			dashboard_client.publish("option/get", new MqttMessage("tds".getBytes()));
 			dashboard_client.publish("status/get", new MqttMessage("light".getBytes()));
 		} catch (MqttException e) {
 			// TODO Auto-generated catch block

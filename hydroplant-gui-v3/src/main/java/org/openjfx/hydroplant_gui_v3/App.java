@@ -92,7 +92,7 @@ public class App extends Application {
 		}
 
 		MqttConnectOptions mqtt_opt = new MqttConnectOptions();
-		mqtt_opt.setMaxInflight(1000);
+		mqtt_opt.setMaxInflight(100);
 		try {
 			gui_client = new MqttClient("tcp://localhost:1883", "gui", pers);
 			gui_client.connect(mqtt_opt);

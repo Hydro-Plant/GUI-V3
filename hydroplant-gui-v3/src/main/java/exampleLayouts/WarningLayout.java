@@ -25,7 +25,7 @@ public class WarningLayout extends Layout {
 	double rec_y;
 
 	final double arc_factor = 100;
-	final double text_size_factor = 150;
+	final double text_size_factor = 200;
 	final double text_edge_size = 0.05;
 	final double background_stroke_factor = 10;
 	final double sign_pos = 100;

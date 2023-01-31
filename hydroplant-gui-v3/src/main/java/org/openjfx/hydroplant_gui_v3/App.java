@@ -40,6 +40,7 @@ import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
+import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TouchEvent;
@@ -68,29 +69,14 @@ public class App extends Application {
 
 	boolean calc_fr = true;
 	static long touch_start = 0;
-	Clip click_sound;
 
 	MemoryPersistence pers;
 	MqttClient gui_client;
-	
+
 	ArrayList<ArrayList<String>> notification_list = new ArrayList<ArrayList<String>>();
-	
+
 	@Override
 	public void start(Stage stage) {
-		var javaVersion = SystemInfo.javaVersion();
-		var javafxVersion = SystemInfo.javafxVersion();
-
-		File audioFile = new File("sounds/click.wav");
-		try {
-			AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile);
-			click_sound = AudioSystem.getClip();
-			click_sound.open(audioInputStream);
-			click_sound.loop(0);
-		} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
 		MqttConnectOptions mqtt_opt = new MqttConnectOptions();
 		mqtt_opt.setMaxInflight(100);
 		try {
@@ -104,9 +90,8 @@ public class App extends Application {
 					switch (topic.toUpperCase()) {
 					case "GUI/NOTIFICATION":
 						Gson gson = new GsonBuilder().setPrettyPrinting().create();
-						ArrayList<String> data = gson.fromJson(message.toString(),
-								new TypeToken<ArrayList<String>>() {
-								}.getType());
+						ArrayList<String> data = gson.fromJson(message.toString(), new TypeToken<ArrayList<String>>() {
+						}.getType());
 						notification_list.add(data);
 						break;
 					}
@@ -132,7 +117,6 @@ public class App extends Application {
 		variables.width = 1366;
 
 		SceneHandler sh;
-
 
 		tests = new TestScene();
 		SceneBundle tests_sb = new SceneBundle(tests);
@@ -209,13 +193,9 @@ public class App extends Application {
 		});
 
 		scene.setOnMouseClicked(new EventHandler<MouseEvent>() { // Handles mouse
-																 // clicks
+																	// clicks
 			@Override
 			public void handle(MouseEvent event) {
-				if(click_sound != null) {
-					click_sound.start();
-				}
-				// calc_fr = !calc_fr;
 				sh.mouseClick(event.getSceneX(), event.getSceneY());
 				if (tb.mouseClick(event.getSceneX(), event.getSceneY()) == 0)
 					sh.externalButton(0);
@@ -223,7 +203,7 @@ public class App extends Application {
 		});
 
 		scene.setOnMouseMoved(new EventHandler<MouseEvent>() { // Handles mouse
-																 // movement
+																// movement
 			@Override
 			public void handle(MouseEvent event) {
 				sh.mouseMoved(event.getSceneX(), event.getSceneY());
@@ -231,7 +211,7 @@ public class App extends Application {
 		});
 
 		scene.setOnMouseDragged(new EventHandler<MouseEvent>() { // Handles
-																 // mouse
+																	// mouse
 			// movement
 			@Override
 			public void handle(MouseEvent event) {
@@ -265,7 +245,7 @@ public class App extends Application {
 
 		});
 
-		//scene.setCursor(Cursor.NONE);
+		scene.setCursor(Cursor.NONE);
 
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
@@ -311,9 +291,10 @@ public class App extends Application {
 					root.getChildren().set(0, sh.getActive().root);
 				}
 				last = now;
-				
-				for(int x = 0; x < notification_list.size(); x++) {
-					Notifications.create().title(notification_list.get(0).get(0)).text(notification_list.get(0).get(1)).showInformation();
+
+				for (int x = 0; x < notification_list.size(); x++) {
+					Notifications.create().title(notification_list.get(0).get(0)).text(notification_list.get(0).get(1))
+							.showInformation();
 					notification_list.remove(0);
 				}
 			}

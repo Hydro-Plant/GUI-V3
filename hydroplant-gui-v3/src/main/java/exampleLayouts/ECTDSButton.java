@@ -34,9 +34,9 @@ public class ECTDSButton extends DashboardButton {
 		if (option.equals("ec")) {
 			title.setText2("EC");
 			unit.setText2("µS/cm");
-			information.setText2(String.format("%.1f", ec));
+			information.setText2(String.format("%.0f", ec));
 		} else {
-			information.setText2(String.format("%.1f", tds));
+			information.setText2(String.format("%.0f", tds));
 			title.setText2("TDS");
 			unit.setText2("ppm");
 		}
@@ -45,7 +45,7 @@ public class ECTDSButton extends DashboardButton {
 	public void setTDS(double tds) {
 		this.tds = tds;
 		if (ec_or_tds.equals("tds")) {
-			information.setText2(String.format("%.1f", tds));
+			information.setText2(String.format("%.0f", tds));
 			if (tds <= t_optimal + t_tol && tds >= t_optimal - t_tol) {
 				bg_rec.setFill(c_optimal);
 			} else if (tds >= t_max) {
@@ -75,7 +75,7 @@ public class ECTDSButton extends DashboardButton {
 		ec = ec * 1000;					// from mS to uS
 		this.ec = ec;
 		if (ec_or_tds.equals("ec")) {
-			information.setText2(String.format("%.1f", ec));
+			information.setText2(String.format("%.0f", ec));
 			if (ec <= e_optimal + e_tol && ec >= e_optimal - e_tol) {
 				bg_rec.setFill(c_optimal);
 			} else if (ec >= e_max) {

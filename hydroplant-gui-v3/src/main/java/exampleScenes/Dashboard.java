@@ -158,19 +158,39 @@ public class Dashboard extends Scene {
 		// Gson
 		gson = new GsonBuilder().setPrettyPrinting().create();
 		System.out.println("Dashboard Gson created");
+		
+		buttons = new Button[] { temp_btn, light_btn, ph_btn, ec_tds_btn, flow_btn, level_btn };
+		button_layouts = new DashboardButton[] { temp_btn_layout, light_btn_layout, ph_btn_layout, ec_tds_btn_layout,
+				flow_btn_layout, level_btn_layout };
 
+		warnings = new Warning[] { temp_warning, light_warning, ph_warning, ec_tds_warning, flow_warning, level_warning };
+		
+		addObject(temp_btn);
+		addObject(light_btn);
+		addObject(ph_btn);
+		addObject(ec_tds_btn);
+		addObject(level_btn);
+		addObject(flow_btn);
+
+		addObject(temp_warning);
+		addObject(light_warning);
+		addObject(ph_warning);
+		addObject(ec_tds_warning);
+		addObject(level_warning);
+		addObject(flow_warning);
+		
 		// Mqtt Startup
 
 		pers = new MemoryPersistence();
 
 		try {
 			MqttConnectOptions mqtt_opt = new MqttConnectOptions();
-			mqtt_opt.setMaxInflight(100);
+			mqtt_opt.setMaxInflight(50);
 			dashboard_client = new MqttClient("tcp://localhost:1883", "dashboard", pers);
 			dashboard_client.connect(mqtt_opt);
 			System.out.println("Dashboard-Client communication established");
 			try {
-				dashboard_client.subscribe(new String[] { "option/temperature", "option/ec", "option/tds", "option/level", "option/ec_or_tds", "value/temperature", "value/light", "status/light",
+				dashboard_client.subscribe(new String[] { "option/temperature", "option/ec", "option/tds", "option/level", "option/ec_or_tds", "value/temperature", "value/light", "value/led",
 						"value/ph", "value/ec", "value/tds", "value/flow", "value/level", "warning/temperature", "warning/light",
 						"warning/ph", "warning/ec", "warning/tds", "warning/flow", "warning/level", "warningtext/temperature",
 						"warningtext/light", "warningtext/ph", "warningtext/ec", "warningtext/tds", "warningtext/flow", "warningtext/level" }, new int[] {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2});
@@ -183,6 +203,7 @@ public class Dashboard extends Scene {
 			dashboard_client.setCallback(new MqttCallback() {
 				@Override
 				public void messageArrived(String topic, MqttMessage message) throws Exception {
+					System.out.println(topic + ": " + new String(message.getPayload()));
 					switch (topic.toUpperCase()) {
 					case "OPTION/TEMPERATURE":
 						ArrayList<Double> temp_options = gson.fromJson(new String(message.getPayload()), new TypeToken<ArrayList<Double>>() {
@@ -205,12 +226,12 @@ public class Dashboard extends Scene {
 						level_btn_layout.setMaxLevel(level_options.get(0));
 						break;
 					case "OPTION/EC_OR_TDS":
-						ec_or_tds = message.toString().strip();
+						ec_or_tds = message.toString();
 						if(ec_or_tds.equals("ec")) ec_tds_warning.setActive(ec_warning_bool);
 						else ec_tds_warning.setActive(tds_warning_bool);
 						if(ec_or_tds.equals("ec")) ec_tds_warning.setText(ec_warning_text);
 						else ec_tds_warning.setText(tds_warning_text);
-						ec_tds_btn_layout.setECorTDS(message.toString());
+						ec_tds_btn_layout.setECorTDS(ec_or_tds);
 						break;
 
 					case "VALUE/TEMPERATURE":
@@ -219,7 +240,7 @@ public class Dashboard extends Scene {
 					case "VALUE/LIGHT":
 						light = Double.parseDouble(message.toString());
 						break;
-					case "STATUS/LIGHT":
+					case "VALUE/LED":
 						lightStatus = Boolean.parseBoolean(message.toString());
 						break;
 					case "VALUE/PH":
@@ -304,38 +325,7 @@ public class Dashboard extends Scene {
 			e.printStackTrace();
 		}
 
-		buttons = new Button[] { temp_btn, light_btn, ph_btn, ec_tds_btn, flow_btn, level_btn };
-		button_layouts = new DashboardButton[] { temp_btn_layout, light_btn_layout, ph_btn_layout, ec_tds_btn_layout,
-				flow_btn_layout, level_btn_layout };
-
-		warnings = new Warning[] { temp_warning, light_warning, ph_warning, ec_tds_warning, flow_warning, level_warning };
-
-		addObject(temp_btn);
-		addObject(light_btn);
-		addObject(ph_btn);
-		addObject(ec_tds_btn);
-		addObject(level_btn);
-		addObject(flow_btn);
-
-		addObject(temp_warning);
-		addObject(light_warning);
-		addObject(ph_warning);
-		addObject(ec_tds_warning);
-		addObject(level_warning);
-		addObject(flow_warning);
-
 		updateShape();
-
-		try {
-			dashboard_client.publish("option/get", new MqttMessage("temperature".getBytes()));
-			dashboard_client.publish("option/get", new MqttMessage("level".getBytes()));
-			dashboard_client.publish("option/get", new MqttMessage("ec".getBytes()));
-			dashboard_client.publish("option/get", new MqttMessage("tds".getBytes()));
-			dashboard_client.publish("status/get", new MqttMessage("light".getBytes()));
-		} catch (MqttException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	// ------ Scene activies

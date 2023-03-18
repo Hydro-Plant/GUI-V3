@@ -68,9 +68,6 @@ public class TimeLapseScene extends Scene {
 	ArrayList<TimeLapse> data_tl;
 	boolean newData = false;
 
-
-
-
 	private void startMqtt() {
 		// Mqtt Startup
 
@@ -78,7 +75,7 @@ public class TimeLapseScene extends Scene {
 
 		try {
 			MqttConnectOptions mqtt_opt = new MqttConnectOptions();
-			mqtt_opt.setMaxInflight(100);
+			mqtt_opt.setMaxInflight(50);
 			timelapse_client = new MqttClient("tcp://localhost:1883", "timelapse", pers);
 			timelapse_client.connect(mqtt_opt);
 			System.out.println("Timelapse-Client communication established");

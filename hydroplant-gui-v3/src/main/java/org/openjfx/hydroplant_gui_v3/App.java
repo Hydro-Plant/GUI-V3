@@ -78,7 +78,7 @@ public class App extends Application {
 	@Override
 	public void start(Stage stage) {
 		MqttConnectOptions mqtt_opt = new MqttConnectOptions();
-		mqtt_opt.setMaxInflight(100);
+		mqtt_opt.setMaxInflight(50);
 		try {
 			gui_client = new MqttClient("tcp://localhost:1883", "gui", pers);
 			gui_client.connect(mqtt_opt);

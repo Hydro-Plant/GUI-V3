@@ -14,7 +14,7 @@ public class LevelButton extends DashboardButton {
 	private final double wave_width = 0.16;
 	private final double speed = -1;
 
-	private final double blur_rad = 0.005;
+	private final double blur_rad = 0.0005;
 
 	double level;
 	double max_level = 10f;
@@ -43,7 +43,7 @@ public class LevelButton extends DashboardButton {
 		wave = new ImageView2();
 		wave.setX2(0);
 		wave.setY2(0);
-		wave.setPos(0);
+		wave.setPos(6);
 
 		title.setText2("Füllstand");
 		unit.setText2("l");

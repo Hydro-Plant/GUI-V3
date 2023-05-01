@@ -6,3 +6,4 @@ bubble0-10.png - kein Verweis nötig - https://www.hubpng.com/photo/2297/bubble-
 warning.png - Verweis nötig - https://de.wikipedia.org/wiki/Datei:Warning-icon-png-2749.png
 arrow.png - Ka - https://www.pngfind.com/mpng/obbwww_down-arrow-png-image-background-down-arrow-icon/
 	       - https://www.pngitem.com/middle/JJxwb_down-arrow-png-image-background-down-arrow-icon/
+battery_icons - https://www.vectorstock.com/royalty-free-vector/simple-battery-icon-vector-720393
